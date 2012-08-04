@@ -38,6 +38,8 @@ class Manipulator
 
   def save
     save!
+  rescue
+    false
   end
 
   def save!
