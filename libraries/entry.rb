@@ -45,12 +45,12 @@ class Entry
 
   # Write out the entry as it appears in the hostsfile
   def to_s
-    aliases = [ aliases ].flatten.join(' ')
+    alias_string = [ aliases ].flatten.join(' ')
 
     unless comment.nil?
-      [ pad(ip_address), hostname, aliases, "# #{comment}" ].join(' ')
+      [ pad(ip_address), hostname, alias_string, "# #{comment}" ].join(' ')
     else
-      [ pad(ip_address), hostname, aliases].join(' ')
+      [ pad(ip_address), hostname, alias_string].join(' ')
     end
   end
 

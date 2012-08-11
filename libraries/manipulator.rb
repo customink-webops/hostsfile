@@ -50,7 +50,7 @@ class Manipulator
     entries << "# Last updated: #{::Time.now}"
     entries << "#"
     entries << ""
-    entries = entries + (@entries.uniq{|e| e.ip_address}.sort)
+    entries = entries + (unique_entries.sort)
 
     ::File.open(hostsfile_path, 'w') do |file|
       file.write( entries.join("\n") )
@@ -69,5 +69,10 @@ class Manipulator
   # Windows.
   def hostsfile_path
     '/etc/hosts'
+  end
+
+  # This is a crazy way of ensuring unique objects in an array using a Hash
+  def unique_entries
+    Hash[*@entries.map{ |entry| [entry.ip_address, entry] }.flatten].values
   end
 end
