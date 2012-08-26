@@ -63,6 +63,12 @@ class Manipulator
     end
   end
 
+  def find_entry_by_hostname(hostname)
+    @entries.detect do |entry|
+      !entry.hostname.nil? && entry.hostname == hostname
+    end
+  end
+
   private
   # Returns the path to the hostsfile.
   # TODO: This should be updated to support multiple platforms, including
