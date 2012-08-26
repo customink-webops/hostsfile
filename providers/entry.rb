@@ -32,8 +32,23 @@ end
 
 # Create a new hosts file entry, only if one does not already exist for
 # the given IP address. If one exists, this does nothing.
-action :create_if_missing do
+action :create_if_missing_ip do
   if hostsfile.find_entry_by_ip_address(new_resource.ip_address).nil?
+    hostsfile.add(
+      :ip_address => new_resource.ip_address,
+      :hostname => new_resource.hostname,
+      :aliases => new_resource.aliases,
+      :comment => new_resource.comment
+    )
+
+    new_resource.updated_by_last_action(true) if hostsfile.save
+  end
+end
+
+# Create a new hosts file entry, only if one does not already exist for
+# the given hostname. If one exists, this does nothing.
+action :create_if_missing_hostname do
+  if hostsfile.find_entry_by_hostname(new_resource.hostname).nil?
     hostsfile.add(
       :ip_address => new_resource.ip_address,
       :hostname => new_resource.hostname,
