@@ -69,6 +69,16 @@ hostsfile_entry '1.2.3.4' do
 end
 ```
 
+#### `create_or_update`
+Create a new hosts file entry if not found. If exists appends given hostname to aliases.
+
+```ruby
+hostsfile_entry '1.2.3.4' do
+  hostname 'www.example.com'
+  action :create_or_update
+end
+```
+
 #### `update`
 Updates the given hosts file entry. Does nothing if the entry does not exist.
 
