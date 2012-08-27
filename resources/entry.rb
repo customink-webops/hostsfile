@@ -18,10 +18,10 @@
 #
 
 # List of all actions supported by the provider
-actions :create, :create_if_missing, :update, :remove
+actions :create, :create_if_missing, :update, :remove, :create_or_update
 
 # Make create the default action
-default_action :create
+#default_action :create
 
 # Required attributes
 attribute :ip_address, :kind_of => String, :name_attribute => true, :required => true

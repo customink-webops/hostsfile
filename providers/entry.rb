@@ -45,6 +45,36 @@ action :create_if_missing do
   end
 end
 
+# Creates new entry in /etc/hosts file if not found.
+# In another case appends to existing.
+
+action :create_or_update do
+  entry = hostsfile.find_entry_by_ip_address(new_resource.ip_address)
+
+  if entry.nil?
+    hostsfile.add(
+      :ip_address => new_resource.ip_address,
+      :hostname => new_resource.hostname,
+      :aliases => new_resource.aliases,
+      :comment => new_resource.comment
+    )
+
+    new_resource.updated_by_last_action(true) if hostsfile.save
+  else
+    @aliases = entry.aliases
+    @aliases.push(new_resource.hostname)
+    @aliases.push(new_resource.aliases)
+    hostsfile.update(
+      :ip_address => entry.ip_address,
+      :hostname => entry.hostname,
+      :aliases => @aliases,
+      :comment => new_resource.comment
+    )
+
+    new_resource.updated_by_last_action(true) if hostsfile.save
+  end
+end
+
 # Updates the given hosts file entry. Does nothing if the entry does not
 # exist.
 action :update do
