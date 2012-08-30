@@ -43,7 +43,22 @@ Attributes
 
 Actions
 -------
-This LWRP comes equipped with 4 actions:
+**Please note**: As of `v0.1.2`, specifying a hostname or alias that exists in another entry will remove that hostname from the other entry before adding to this one. For example:
+
+    1.2.3.4          example.com www.example.com
+
+and
+
+```ruby
+hostsfile_entry '2.3.4.5' do
+  hostname 'www.example.com'
+end
+```
+
+would yield an /etc/hosts file like this:
+
+    1.2.3.4          example.com
+    2.3.4.5          www.example.com
 
 #### `create`
 Creates a new hosts file entry. If an entry already exists, it will be overwritten by this one.
@@ -68,6 +83,24 @@ hostsfile_entry '1.2.3.4' do
   action :create_if_missing
 end
 ```
+
+#### `append`
+Append a hostname or alias to an existing record. If the given IP address doesn't not already exist in the hostsfile, this method behaves the same as create. Otherwise, it will append the additional hostname and aliases to the existing entry.
+
+    1.2.3.4         example.com www.example.com # Created by Chef
+
+```ruby
+hostsfile_entry '1.2.3.4' do
+  hostname 'www2.example.com'
+  aliases ['foo.com', 'foobar.com']
+  comment 'Append by Recipe X'
+end
+```
+
+would yield:
+
+    1.2.3.4         example.com www.example.com www2.example.com foo.com foobar.com # Created by Chef, Appended by Recipe X
+
 
 #### `update`
 Updates the given hosts file entry. Does nothing if the entry does not exist.

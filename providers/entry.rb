@@ -27,7 +27,7 @@ action :create do
     :comment => new_resource.comment
   )
 
-  new_resource.updated_by_last_action(true) if hostsfile.save
+  new_resource.updated_by_last_action(true) if hostsfile.save!
 end
 
 # Create a new hosts file entry, only if one does not already exist for
@@ -41,8 +41,21 @@ action :create_if_missing do
       :comment => new_resource.comment
     )
 
-    new_resource.updated_by_last_action(true) if hostsfile.save
+    new_resource.updated_by_last_action(true) if hostsfile.save!
   end
+end
+
+# Appends the given data to an existing entry. If an entry does not exist,
+# one will be created
+action :append do
+  hostsfile.append(
+    :ip_address => new_resource.ip_address,
+    :hostname => new_resource.hostname,
+    :aliases => new_resource.aliases,
+    :comment => new_resource.comment
+  )
+
+  new_resource.updated_by_last_action(true) if hostsfile.save!
 end
 
 # Updates the given hosts file entry. Does nothing if the entry does not
@@ -55,7 +68,7 @@ action :update do
     :comment => new_resource.comment
   )
 
-  new_resource.updated_by_last_action(true) if hostsfile.save
+  new_resource.updated_by_last_action(true) if hostsfile.save!
 end
 
 # Removes an entry from the hosts file. Does nothing if the entry does
@@ -63,7 +76,7 @@ end
 action :remove do
   hostsfile.remove(new_resource.ip_address)
 
-  new_resource.updated_by_last_action(true) if hostsfile.save
+  new_resource.updated_by_last_action(true) if hostsfile.save!
 end
 
 private

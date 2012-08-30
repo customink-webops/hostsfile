@@ -30,6 +30,15 @@ class Manipulator
     end
   end
 
+  def append(options = {})
+    if entry = find_entry_by_ip_address(options[:ip_address])
+      entry.aliases = [ entry.aliases, options[:hostname], options[:aliases] ].flatten.compact.uniq
+      entry.comment = [ entry.comment, options[:comment] ].compact.join(', ') unless entry.comment.include?(options[:comment])
+    else
+      add(options)
+    end
+  end
+
   def remove(ip_address)
     if entry = find_entry_by_ip_address(ip_address)
       @entries.delete(entry)
@@ -73,6 +82,37 @@ class Manipulator
 
   # This is a crazy way of ensuring unique objects in an array using a Hash
   def unique_entries
+    remove_existing_hostnames
     Hash[*@entries.map{ |entry| [entry.ip_address, entry] }.flatten].values
+  end
+
+  # This method ensures that hostnames/aliases and only used once. It
+  # doesn't make sense to allow multiple IPs to have the same hostname
+  # or aliases. This method removes all occurrences of the existing
+  # hostname/aliases from existing records.
+  #
+  # This method also intelligently removes any entries that should no
+  # longer exist.
+  def remove_existing_hostnames
+    new_entry = @entries.pop
+    changed_hostnames = [ new_entry.hostname, new_entry.aliases ].flatten.uniq
+
+    @entries = @entries.collect do |entry|
+      entry.hostname = nil if changed_hostnames.include?(entry.hostname)
+      entry.aliases = entry.aliases - changed_hostnames
+
+      if entry.hostname.nil?
+        if entry.aliases.empty?
+          nil
+        else
+          entry.hostname = entry.aliases.shift
+          entry
+        end
+      else
+        entry
+      end
+    end.compact
+
+    @entries << new_entry
   end
 end
