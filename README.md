@@ -135,11 +135,11 @@ Download or install this cookbook from the community site:
 
     $ knife cookbook site install hostsfile
 
-Then, simply include this recipe and you'll be granted access to this LWPR:
+Have your cookbook depend on hostsfile by editing editing the metadata.rb for your cookbook.
 
 ```ruby
-# your_recipe.rb
-include_recipe 'hostsfile'
+# metadata.rb
+depends 'hostsfile'
 ```
 
 Contributing
