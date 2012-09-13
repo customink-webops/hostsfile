@@ -33,7 +33,7 @@ class Manipulator
   def append(options = {})
     if entry = find_entry_by_ip_address(options[:ip_address])
       entry.aliases = [ entry.aliases, options[:hostname], options[:aliases] ].flatten.compact.uniq
-      entry.comment = [ entry.comment, options[:comment] ].compact.join(', ') unless entry.comment.include?(options[:comment])
+      entry.comment = [ entry.comment, options[:comment] ].compact.join(', ') unless entry.comment && entry.comment.include?(options[:comment])
     else
       add(options)
     end
