@@ -54,12 +54,13 @@ class Manipulator
   def save!
     entries = []
     entries << "#"
-    entries << "# This file is (partially) managed by Chef, using the hostsfile cookbook."
+    entries << "# This file is managed by Chef, using the hostsfile cookbook."
     entries << "# Editing this file by hand is highly discouraged!"
     entries << "# Last updated: #{::Time.now}"
     entries << "#"
     entries << ""
-    entries = entries + (unique_entries.sort)
+    entries += unique_entries.sort
+    entries << ""
 
     ::File.open(hostsfile_path, 'w') do |file|
       file.write( entries.join("\n") )
