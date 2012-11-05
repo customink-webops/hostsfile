@@ -1,3 +1,4 @@
+name 'hostsfile'
 maintainer 'Seth Vargo'
 maintainer_email 'webops@customink.com'
 license 'All rights reserved'

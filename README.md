@@ -133,11 +133,17 @@ This will remove the entry for `1.2.3.4`.
 
 Usage
 -----
-Download or install this cookbook from the community site:
+If you're using [Berkshelf](http://berkshelf.com/), just add `hostsfile` to your `Berksfile`:
 
-    $ knife cookbook site install hostsfile
+```ruby
+cookbook 'hostsfile'
+```
 
-Have your cookbook depend on hostsfile by editing editing the metadata.rb for your cookbook.
+Otherwise, install the cookbook from the community site:
+
+    knife cookbook site install hostsfile
+
+Have any other cookbooks *depend* on hostsfile by editing editing the `metadata.rb` for your cookbook.
 
 ```ruby
 # metadata.rb
