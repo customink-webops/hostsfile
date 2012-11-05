@@ -6,6 +6,8 @@ Requirements
 ------------
 At this time, you must have a Unix-based machine. This could easily be adapted for Windows machines. Please submit a Pull Request if you wish to add Windows support.
 
+**This cookbook requires Ruby 1.9.3 or greater.**
+
 Attributes
 ----------
 <table>
