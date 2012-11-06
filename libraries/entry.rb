@@ -52,18 +52,13 @@ class Entry
     alias_string = [ aliases ].flatten.join(' ')
 
     unless comment.nil?
-      [ pad(ip_address), hostname, alias_string, "# #{comment}" ].join(' ').strip
+      [ ip_address, hostname + ' ' + alias_string, "# #{comment}" ].join("\t").strip
     else
-      [ pad(ip_address), hostname, alias_string].join(' ').strip
+      [ ip_address, hostname + ' ' + alias_string].join("\t").strip
     end
   end
 
   private
-  # Pads the ip_address to length 15 so things are nicely in a column
-  def pad(ip_address)
-    ip_address.to_string() + ' '*(20-ip_address.to_string().length)
-  end
-
   # Proxy to the class method
   def calculate_priority(ip_address)
     Entry.send(:calculate_priority, ip_address)
