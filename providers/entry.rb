@@ -21,11 +21,11 @@
 # overwritten by this one.
 action :create do
   hostsfile.add(
-    ip_address: new_resource.ip_address,
-    hostname: new_resource.hostname,
-    aliases: new_resource.aliases,
-    comment: new_resource.comment,
-    priority: new_resource.priority
+    :ip_address => new_resource.ip_address,
+    :hostname => new_resource.hostname,
+    :aliases => new_resource.aliases,
+    :comment => new_resource.comment,
+    :priority => new_resource.priority
   )
 
   new_resource.updated_by_last_action(true) if hostsfile.save!
@@ -36,11 +36,11 @@ end
 action :create_if_missing do
   if hostsfile.find_entry_by_ip_address(new_resource.ip_address).nil?
     hostsfile.add(
-      ip_address: new_resource.ip_address,
-      hostname: new_resource.hostname,
-      aliases: new_resource.aliases,
-      comment: new_resource.comment,
-      priority: new_resource.priority
+      :ip_address => new_resource.ip_address,
+      :hostname => new_resource.hostname,
+      :aliases => new_resource.aliases,
+      :comment => new_resource.comment,
+      :priority => new_resource.priority
     )
 
     new_resource.updated_by_last_action(true) if hostsfile.save!
@@ -51,11 +51,11 @@ end
 # one will be created
 action :append do
   hostsfile.append(
-    ip_address: new_resource.ip_address,
-    hostname: new_resource.hostname,
-    aliases: new_resource.aliases,
-    comment: new_resource.comment,
-    priority: new_resource.priority
+    :ip_address => new_resource.ip_address,
+    :hostname => new_resource.hostname,
+    :aliases => new_resource.aliases,
+    :comment => new_resource.comment,
+    :priority => new_resource.priority
   )
 
   new_resource.updated_by_last_action(true) if hostsfile.save!
@@ -65,11 +65,11 @@ end
 # exist.
 action :update do
   hostsfile.update(
-    ip_address: new_resource.ip_address,
-    hostname: new_resource.hostname,
-    aliases: new_resource.aliases,
-    comment: new_resource.comment,
-    priority: new_resource.priority
+    :ip_address => new_resource.ip_address,
+    :hostname => new_resource.hostname,
+    :aliases => new_resource.aliases,
+    :comment => new_resource.comment,
+    :priority => new_resource.priority
   )
 
   new_resource.updated_by_last_action(true) if hostsfile.save!

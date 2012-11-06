@@ -15,11 +15,11 @@ class Manipulator
 
   def add(options = {})
     @entries << Entry.new(
-      ip_address: options[:ip_address],
-      hostname: options[:hostname],
-      aliases: options[:aliases],
-      comment: options[:comment],
-      priority: options[:priority]
+      :ip_address => options[:ip_address],
+      :hostname => options[:hostname],
+      :aliases => options[:aliases],
+      :comment => options[:comment],
+      :priority => options[:priority]
     )
   end
 

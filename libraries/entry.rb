@@ -27,11 +27,11 @@ class Entry
       # Otherwise, collect all the entries and make a new Entry
       entries = entry_part.split(/\s+/).collect{ |entry| entry.strip unless entry.nil? || entry.strip.empty? }.compact
       return self.new(
-        ip_address: entries[0],
-        hostname: entries[1],
-        aliases: entries[2..-1],
-        comment: comment_part,
-        priority: calculate_priority(entries[0])
+        :ip_address => entries[0],
+        :hostname => entries[1],
+        :aliases => entries[2..-1],
+        :comment => comment_part,
+        :priority => calculate_priority(entries[0])
       )
     end
 
