@@ -31,3 +31,9 @@ attribute :hostname, :kind_of => String
 attribute :aliases, :kind_of => Array
 attribute :comment, :kind_of => String
 attribute :priority, :kind_of => Fixnum
+
+# Covers 0.10.8 and earlier
+def initialize(*args)
+  super
+  @action = :create
+end
