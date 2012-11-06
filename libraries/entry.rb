@@ -1,14 +1,16 @@
+require 'ipaddr'
+
 class Entry
   attr_accessor :ip_address, :hostname, :aliases, :comment, :priority
 
   def initialize(options = {})
     raise ':ip_address and :hostname are both required options' if options[:ip_address].nil? || options[:hostname].nil?
 
-    @ip_address = options[:ip_address]
+    @ip_address = IPAddr.new(options[:ip_address])
     @hostname = options[:hostname]
     @aliases = [options[:aliases]].flatten
     @comment = options[:comment]
-    @priority = options[:priority] || calculate_priority(options[:ip_address])
+    @priority = options[:priority] || calculate_priority(@ip_address)
   end
 
   class << self
@@ -30,17 +32,18 @@ class Entry
         ip_address: entries[0],
         hostname: entries[1],
         aliases: entries[2..-1],
-        comment: comment_part,
-        priority: calculate_priority(entries[0])
+        comment: comment_part
       )
     end
 
     private
     # Attempt to calculate the relative priority of each entry
     def calculate_priority(ip_address)
-      return 80 if ip_address.between?('127.0.0.1', '127.0.0.8') # local
-      return 60 if ip_address.match /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/ # ipv4
-      return 20 # ipv6
+      return 81 if ip_address == IPAddr.new("127.0.0.1")
+      return 80 if IPAddr.new("127.0.0.0/8").include?(ip_address) # local
+      return 60 if ip_address.ipv4? # ipv4
+      return 20 if ip_address.ipv6? # ipv6
+      return 00 # 
     end
   end
 
@@ -58,7 +61,7 @@ class Entry
   private
   # Pads the ip_address to length 15 so things are nicely in a column
   def pad(ip_address)
-    ip_address + ' '*(20-ip_address.length)
+    ip_address.to_string() + ' '*(20-ip_address.to_string().length)
   end
 
   # Proxy to the class method
