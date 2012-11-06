@@ -24,7 +24,7 @@ actions :create, :create_if_missing, :append, :update, :remove
 default_action :create
 
 # Required attributes
-attribute :ip_address, :kind_of => String, :name_attribute => true, :required => true
+attribute :ip_address, :kind_of => String, :name_attribute => true
 attribute :hostname, :kind_of => String
 
 # Optional attributes
