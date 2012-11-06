@@ -15,10 +15,11 @@ class Manipulator
 
   def add(options = {})
     @entries << Entry.new(
-      :ip_address => options[:ip_address],
-      :hostname => options[:hostname],
-      :aliases => options[:aliases],
-      :comment => options[:comment]
+      ip_address: options[:ip_address],
+      hostname: options[:hostname],
+      aliases: options[:aliases],
+      comment: options[:comment],
+      priority: options[:priority]
     )
   end
 
@@ -27,6 +28,7 @@ class Manipulator
       entry.hostname = options[:hostname]
       entry.aliases = options[:aliases]
       entry.comment = options[:comment]
+      entry.priority = options[:priority]
     end
   end
 
@@ -59,7 +61,7 @@ class Manipulator
     entries << "# Last updated: #{::Time.now}"
     entries << "#"
     entries << ""
-    entries += unique_entries.sort
+    entries += unique_entries.sort_by{ |e| [-e.priority, e.hostname] }
     entries << ""
 
     ::File.open(hostsfile_path, 'w') do |file|

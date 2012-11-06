@@ -41,6 +41,12 @@ Attributes
     <td><tt>'interal DNS server'</tt></td>
     <td><tt>nil</tt></td>
   </tr>
+  <tr>
+    <td>priority</td>
+    <td>the relative position of this entry</td>
+    <td><tt>20</tt></td>
+    <td>(varies, see **Priorities** section)</td>
+  </tr>
 </table>
 
 Actions
@@ -149,6 +155,16 @@ Have any other cookbooks *depend* on hostsfile by editing editing the `metadata.
 # metadata.rb
 depends 'hostsfile'
 ```
+
+Priority
+--------
+Priority is a relatively new addition to the cookbook. It gives you the ability to (somewhat) specify the relative order of entries. By default, the priority is calculated for you as follows:
+
+1. Local, loopback
+2. IPV4
+3. IPV6
+
+However, you can override it using the `priority` option.
 
 Contributing
 ------------

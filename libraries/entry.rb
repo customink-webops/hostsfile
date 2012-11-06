@@ -1,5 +1,5 @@
 class Entry
-  attr_accessor :ip_address, :hostname, :aliases, :comment
+  attr_accessor :ip_address, :hostname, :aliases, :comment, :priority
 
   def initialize(options = {})
     raise ':ip_address and :hostname are both required options' if options[:ip_address].nil? || options[:hostname].nil?
@@ -8,38 +8,39 @@ class Entry
     @hostname = options[:hostname]
     @aliases = [options[:aliases]].flatten
     @comment = options[:comment]
+    @priority = options[:priority] || calculate_priority(options[:ip_address])
   end
 
-  # Creates a new Hostsfile::Entry object by parsing a text line. The
-  # `line` attribute will be in the following format:
-  #
-  #     1.2.3.4 hostname [alias[, alias[, alias]]] [# comment]
-  #
-  # This returns a new Entry object...
-  def self.parse(line)
-    entry_part, comment_part = line.split('#', 2).collect{ |part| part.strip.empty? ? nil : part.strip }
+  class << self
+    # Creates a new Hostsfile::Entry object by parsing a text line. The
+    # `line` attribute will be in the following format:
+    #
+    #     1.2.3.4 hostname [alias[, alias[, alias]]] [# comment]
+    #
+    # This returns a new Entry object...
+    def parse(line)
+      entry_part, comment_part = line.split('#', 2).collect{ |part| part.strip.empty? ? nil : part.strip }
 
-    # Return nil if the line is empty
-    return nil if entry_part.nil?
+      # Return nil if the line is empty
+      return nil if entry_part.nil?
 
-    # Otherwise, collect all the entries and make a new Entry
-    entries = entry_part.split(/\s+/).collect{ |entry| entry.strip unless entry.nil? || entry.strip.empty? }.compact
-    return self.new(
-      :ip_address => entries[0],
-      :hostname => entries[1],
-      :aliases => entries[2..-1],
-      :comment => comment_part
-    )
-  end
+      # Otherwise, collect all the entries and make a new Entry
+      entries = entry_part.split(/\s+/).collect{ |entry| entry.strip unless entry.nil? || entry.strip.empty? }.compact
+      return self.new(
+        ip_address: entries[0],
+        hostname: entries[1],
+        aliases: entries[2..-1],
+        comment: comment_part,
+        priority: calculate_priority(entries[0])
+      )
+    end
 
-  # Sort by comparing hostnames
-  def <=>(other_entry)
-    if self.hostname == 'localhost'
-      -1
-    elsif other_entry.hostname == 'localhost'
-      1
-    else
-      self.hostname <=> other_entry.hostname
+    private
+    # Attempt to calculate the relative priority of each entry
+    def calculate_priority(ip_address)
+      return 80 if ip_address.between?('127.0.0.1', '127.0.0.8') # local
+      return 60 if ip_address.match /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/ # ipv4
+      return 20 # ipv6
     end
   end
 
@@ -48,9 +49,9 @@ class Entry
     alias_string = [ aliases ].flatten.join(' ')
 
     unless comment.nil?
-      [ pad(ip_address), hostname, alias_string, "# #{comment}" ].join(' ')
+      [ pad(ip_address), hostname, alias_string, "# #{comment}" ].join(' ').strip
     else
-      [ pad(ip_address), hostname, alias_string].join(' ')
+      [ pad(ip_address), hostname, alias_string].join(' ').strip
     end
   end
 
@@ -58,5 +59,10 @@ class Entry
   # Pads the ip_address to length 15 so things are nicely in a column
   def pad(ip_address)
     ip_address + ' '*(20-ip_address.length)
+  end
+
+  # Proxy to the class method
+  def calculate_priority(ip_address)
+    Entry.send(:calculate_priority, ip_address)
   end
 end
