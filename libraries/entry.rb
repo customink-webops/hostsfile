@@ -23,11 +23,11 @@ class Entry
     return nil if entry_part.nil?
 
     # Otherwise, collect all the entries and make a new Entry
-    entires = entry_part.split(/\s+/).collect{ |entry| entry.strip unless entry.nil? || entry.strip.empty? }.compact
+    entries = entry_part.split(/\s+/).collect{ |entry| entry.strip unless entry.nil? || entry.strip.empty? }.compact
     return self.new(
-      :ip_address => entires[0],
-      :hostname => entires[1],
-      :aliases => entires[2..-1],
+      :ip_address => entries[0],
+      :hostname => entries[1],
+      :aliases => entries[2..-1],
       :comment => comment_part
     )
   end
