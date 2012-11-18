@@ -30,7 +30,7 @@ class Entry
     @hostname = options[:hostname]
     @aliases = [options[:aliases]].flatten
     @comment = options[:comment]
-    @priority = options[:priority] || calculate_priority(@ip_address)
+    @priority = options[:priority] || calculate_priority(options[:ip_address])
   end
 
   class << self
@@ -52,19 +52,20 @@ class Entry
         :ip_address => entries[0],
         :hostname => entries[1],
         :aliases => entries[2..-1],
-        :comment => comment_part,
-        :priority => calculate_priority(entries[0])
+        :comment => comment_part
       )
     end
 
     private
     # Attempt to calculate the relative priority of each entry
     def calculate_priority(ip_address)
-      return 81 if ip_address == IPAddr.new("127.0.0.1")
-      return 80 if IPAddr.new("127.0.0.0/8").include?(ip_address) # local
-      return 60 if IPAddr.new(ip_address, Socket::AF_UNSPEC).ipv4? # ipv4
-      return 20 if IPAddr.new(ip_address, Socket::AF_UNSPEC).ipv6? # ipv6
-      return 00 #
+      ip_address = IPAddr.new(ip_address)
+
+      return 81 if ip_address == IPAddr.new('127.0.0.1')
+      return 80 if IPAddr.new('127.0.0.0/8').include?(ip_address) # local
+      return 60 if ip_address.ipv4? # ipv4
+      return 20 if ip_address.ipv6? # ipv6
+      return 00
     end
   end
 
@@ -77,11 +78,5 @@ class Entry
     else
       [ ip_address, hostname + ' ' + alias_string].join("\t").strip
     end
-  end
-
-  private
-  # Proxy to the class method
-  def calculate_priority(ip_address)
-    Entry.send(:calculate_priority, ip_address)
   end
 end
