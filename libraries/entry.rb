@@ -55,18 +55,6 @@ class Entry
         :comment => comment_part
       )
     end
-
-    private
-    # Attempt to calculate the relative priority of each entry
-    def calculate_priority(ip_address)
-      ip_address = IPAddr.new(ip_address)
-
-      return 81 if ip_address == IPAddr.new('127.0.0.1')
-      return 80 if IPAddr.new('127.0.0.0/8').include?(ip_address) # local
-      return 60 if ip_address.ipv4? # ipv4
-      return 20 if ip_address.ipv6? # ipv6
-      return 00
-    end
   end
 
   # Write out the entry as it appears in the hostsfile
@@ -78,5 +66,17 @@ class Entry
     else
       [ ip_address, hostname + ' ' + alias_string].join("\t").strip
     end
+  end
+
+  private
+  # Attempt to calculate the relative priority of each entry
+  def calculate_priority(ip_address)
+    ip_address = IPAddr.new(ip_address)
+
+    return 81 if ip_address == IPAddr.new('127.0.0.1')
+    return 80 if IPAddr.new('127.0.0.0/8').include?(ip_address) # local
+    return 60 if ip_address.ipv4? # ipv4
+    return 20 if ip_address.ipv6? # ipv6
+    return 00
   end
 end
