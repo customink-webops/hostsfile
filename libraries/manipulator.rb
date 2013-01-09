@@ -101,7 +101,11 @@ class Manipulator
   # TODO: This should be updated to support multiple platforms, including
   # Windows.
   def get_hostsfile_path
-    '/etc/hosts'
+    if Chef::Platform.windows?
+      File.join(ENV['SYSTEMROOT'], '\System32\drivers\etc\hosts')
+    else
+      '/etc/hosts'
+    end
   end
 
   # This is a crazy way of ensuring unique objects in an array using a Hash
