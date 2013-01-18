@@ -20,7 +20,8 @@
 
 class Manipulator
   def initialize
-    contents = ::File.readlines(hostsfile_path)
+    @hostsfile_path = get_hostsfile_path
+    contents = ::File.readlines(@hostsfile_path)
 
     @entries = contents.collect do |line|
       Entry.parse(line) unless line.strip.nil? || line.strip.empty?
@@ -84,7 +85,7 @@ class Manipulator
     entries += unique_entries.sort_by{ |e| [-e.priority, e.hostname] }
     entries << ""
 
-    ::File.open(hostsfile_path, 'w') do |file|
+    ::File.open(@hostsfile_path, 'w') do |file|
       file.write( entries.join("\n") )
     end
   end
@@ -99,8 +100,12 @@ class Manipulator
   # Returns the path to the hostsfile.
   # TODO: This should be updated to support multiple platforms, including
   # Windows.
-  def hostsfile_path
-    '/etc/hosts'
+  def get_hostsfile_path
+    if Chef::Platform.windows?
+      File.join(ENV['SYSTEMROOT'], '\System32\drivers\etc\hosts')
+    else
+      '/etc/hosts'
+    end
   end
 
   # This is a crazy way of ensuring unique objects in an array using a Hash
