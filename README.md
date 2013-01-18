@@ -1,5 +1,7 @@
 hostsfile LWRP
 ==============
+[![Build Status](https://travis-ci.org/customink-webops/hostsfile.png?branch=master)](https://travis-ci.org/customink-webops/hostsfile)
+
 `hostsfile` provides an LWRP for managing your hosts file using Chef.
 
 Requirements

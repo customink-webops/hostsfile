@@ -24,11 +24,11 @@ class Entry
   attr_accessor :ip_address, :hostname, :aliases, :comment, :priority
 
   def initialize(options = {})
-    raise ':ip_address and :hostname are both required options' if options[:ip_address].nil? || options[:hostname].nil?
+    raise ArgumentError, ':ip_address and :hostname are both required options' if options[:ip_address].nil? || options[:hostname].nil?
 
     @ip_address = IPAddr.new(options[:ip_address])
     @hostname = options[:hostname]
-    @aliases = [options[:aliases]].flatten
+    @aliases = [options[:aliases]].flatten.compact
     @comment = options[:comment]
     @priority = options[:priority] || calculate_priority(options[:ip_address])
   end
@@ -62,9 +62,9 @@ class Entry
     alias_string = [ aliases ].flatten.join(' ')
 
     unless comment.nil?
-      [ ip_address, hostname + ' ' + alias_string, "# #{comment}" ].join("\t").strip
+      [ ip_address, (hostname + ' ' + alias_string).strip, "# #{comment}" ].join("\t").strip
     else
-      [ ip_address, hostname + ' ' + alias_string].join("\t").strip
+      [ ip_address, (hostname + ' ' + alias_string).strip].join("\t").strip
     end
   end
 

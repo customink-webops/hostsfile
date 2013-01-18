@@ -86,5 +86,5 @@ end
 
 private
 def hostsfile
-  @hostsfile ||= Manipulator.new
+  @hostsfile ||= Manipulator.new(node)
 end
