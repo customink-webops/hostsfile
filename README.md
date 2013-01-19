@@ -59,7 +59,7 @@ and
 
 ```ruby
 hostsfile_entry '2.3.4.5' do
-  hostname 'www.example.com'
+  hostname  'www.example.com'
 end
 ```
 
@@ -73,8 +73,8 @@ Creates a new hosts file entry. If an entry already exists, it will be overwritt
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
-  hostname 'example.com'
-  action :create
+  hostname  'example.com'
+  action    :create
 end
 ```
 
@@ -87,8 +87,8 @@ Create a new hosts file entry, only if one does not already exist for the given 
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
-  hostname 'example.com'
-  action :create_if_missing
+  hostname  'example.com'
+  action    :create_if_missing
 end
 ```
 
@@ -99,9 +99,10 @@ Append a hostname or alias to an existing record. If the given IP address doesn'
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
-  hostname 'www2.example.com'
-  aliases ['foo.com', 'foobar.com']
-  comment 'Append by Recipe X'
+  hostname  'www2.example.com'
+  aliases   ['foo.com', 'foobar.com']
+  comment   'Append by Recipe X'
+  action    :append
 end
 ```
 
@@ -115,9 +116,9 @@ Updates the given hosts file entry. Does nothing if the entry does not exist.
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
-  hostname 'example.com'
-  comment 'Update by Chef'
-  action :update
+  hostname  'example.com'
+  comment   'Update by Chef'
+  action    :update
 end
 ```
 
@@ -131,7 +132,7 @@ exist.
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
-  action :remove
+  action    :remove
 end
 ```
 
