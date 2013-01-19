@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+master
+------
+- Support Windows (thanks @igantt-daptiv)
+- Specs + Travis support
+
 v0.2.0
 ------
 - Updated README to require Ruby 1.9
@@ -10,10 +15,10 @@ v0.2.0
 
 v0.1.1
 ------
-- fixed issue #1
-- better unique object filtering
-- better handing of aliases
+- Fixed issue #1
+- Better unique object filtering
+- Better handing of aliases
 
 v0.1.0
 ------
-- initial release
+- Initial release
