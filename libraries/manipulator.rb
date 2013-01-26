@@ -102,10 +102,11 @@ class Manipulator
   # Returns the path to the hostsfile.
   def hostsfile_path
     @hostsfile_path ||= case node['platform_family']
-      when 'centos', 'rehl', 'redhat', 'suse', 'fedora', 'ubuntu', 'debian'
-        '/etc/hosts'
       when 'windows'
         "#{node['kernel']['os_info']['system_directory']}\\drivers\\etc\\hosts"
+      else
+        # debian, rhel, fedora, suse, gentoo, slackware, arch, mac_os_x, windows
+        '/etc/hosts'
       end
   end
 
