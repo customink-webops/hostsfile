@@ -23,7 +23,7 @@ class Manipulator
 
   def initialize(node)
     @node = node.to_hash
-    contents = ::File.readlines(hostsfile_path)
+    contents = ::File.exists?(hostsfile_path) ? ::File.readlines(hostsfile_path) : []
 
     @entries = contents.collect do |line|
       Entry.parse(line) unless line.strip.nil? || line.strip.empty?
