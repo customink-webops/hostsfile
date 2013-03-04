@@ -5,6 +5,8 @@ master
 ------
 - Support Windows (thanks @igantt-daptiv)
 - Specs + Travis support
+- Throw fatal error if hostsfile does not exist (@jkerzner)
+- Write priorities in hostsfile so they are read on subsequent Chef runs
 
 v0.2.0
 ------

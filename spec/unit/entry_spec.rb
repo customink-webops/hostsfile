@@ -78,23 +78,33 @@ describe Entry do
       end
 
       it 'parses just an ip_address and hostname' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => nil)
+        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => nil, :priority => nil)
         Entry.parse('1.2.3.4      www.example.com')
       end
 
       it 'parses aliases' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => ['foo', 'bar'], :comment => nil)
+        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => ['foo', 'bar'], :comment => nil, :priority => nil)
         Entry.parse('1.2.3.4      www.example.com foo bar')
       end
 
       it 'parses a comment' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => 'This is a comment!')
+        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => 'This is a comment!', :priority => nil)
         Entry.parse('1.2.3.4      www.example.com     # This is a comment!')
       end
 
       it 'parses aliases and comments' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => ['foo', 'bar'], :comment => 'This is a comment!')
+        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => ['foo', 'bar'], :comment => 'This is a comment!', :priority => nil)
         Entry.parse('1.2.3.4      www.example.com foo bar     # This is a comment!')
+      end
+
+      it 'parses priorities with comments' do
+        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => 'This is a comment!', :priority => '40')
+        Entry.parse('1.2.3.4      www.example.com     # This is a comment! @40')
+      end
+
+      it 'parses priorities' do
+        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => nil, :priority => '40')
+        Entry.parse('1.2.3.4      www.example.com     # @40')
       end
     end
   end
@@ -111,6 +121,11 @@ describe Entry do
         subject.aliases << 'foo'
         expect(subject.to_s).to eq("2.3.4.5\twww.example.com foo")
       end
+
+      it 'prints out the priority' do
+        subject.priority = 10
+        expect(subject.to_s).to eq("2.3.4.5\twww.example.com\t# @10")
+      end
     end
 
     context 'with a comment' do
@@ -124,6 +139,12 @@ describe Entry do
         subject.aliases << 'foo'
         expect(subject.to_s).to eq("2.3.4.5\twww.example.com foo\t# This is a comment!")
       end
+
+      it 'prints out the priority' do
+        subject.priority = 10
+        expect(subject.to_s).to eq("2.3.4.5\twww.example.com\t# This is a comment! @10")
+      end
+
     end
   end
 end

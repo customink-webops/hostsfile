@@ -33,15 +33,26 @@ class Entry
     @priority = options[:priority] || calculate_priority(options[:ip_address])
   end
 
+  def priority=(new_priority)
+    @calculated_priority = false
+    @priority = new_priority
+  end
+
   class << self
     # Creates a new Hostsfile::Entry object by parsing a text line. The
     # `line` attribute will be in the following format:
     #
-    #     1.2.3.4 hostname [alias[, alias[, alias]]] [# comment]
+    #     1.2.3.4 hostname [alias[, alias[, alias]]] [# comment [@priority]]
     #
     # This returns a new Entry object...
     def parse(line)
-      entry_part, comment_part = line.split('#', 2).collect{ |part| part.strip.empty? ? nil : part.strip }
+      entry_part, comment_part = line.split('#', 2).collect { |part| part.strip.empty? ? nil : part.strip }
+
+      if comment_part && comment_part.include?('@')
+        comment_part, priority = comment_part.split('@', 2).collect { |part| part.strip.empty? ? nil : part.strip }
+      else
+        priority = nil
+      end
 
       # Return nil if the line is empty
       return nil if entry_part.nil?
@@ -52,25 +63,28 @@ class Entry
         :ip_address => entries[0],
         :hostname => entries[1],
         :aliases => entries[2..-1],
-        :comment => comment_part
+        :comment => comment_part,
+        :priority => priority
       )
     end
   end
 
   # Write out the entry as it appears in the hostsfile
   def to_s
-    alias_string = [ aliases ].flatten.join(' ')
+    hosts = [hostname, aliases].flatten.join(' ')
 
-    unless comment.nil?
-      [ ip_address, (hostname + ' ' + alias_string).strip, "# #{comment}" ].join("\t").strip
-    else
-      [ ip_address, (hostname + ' ' + alias_string).strip].join("\t").strip
-    end
+    comments = "# #{comment.to_s}".strip
+    comments << " @#{priority}" unless priority.nil? || @calculated_priority
+    comments = comments.strip
+    comments = nil if comments == '#'
+
+    [ip_address, hosts, comments].compact.join("\t").strip
   end
 
   private
   # Attempt to calculate the relative priority of each entry
   def calculate_priority(ip_address)
+    @calculated_priority = true
     ip_address = IPAddr.new(ip_address)
 
     return 81 if ip_address == IPAddr.new('127.0.0.1')
