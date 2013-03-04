@@ -22,6 +22,9 @@ class Manipulator
   attr_reader :node
 
   def initialize(node)
+    # Fail if no hostsfile is found
+    Chef::Log.fatal "No hostsfile exists at '#{hostsfile_path}'!" unless ::File.exists?(hostsfile_path)
+
     @node = node.to_hash
     contents = ::File.readlines(hostsfile_path)
 
