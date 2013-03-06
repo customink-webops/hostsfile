@@ -92,7 +92,7 @@ class Manipulator
     entries << "# Last updated: #{::Time.now}"
     entries << "#"
     entries << ""
-    entries += unique_entries.sort_by{ |e| [-e.priority, e.hostname] }
+    entries += unique_entries.sort_by{ |e| [-e.priority.to_i, e.hostname.to_s] }
     entries << ""
 
     ::File.open(hostsfile_path, 'w') do |file|
