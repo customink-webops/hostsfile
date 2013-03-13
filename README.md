@@ -6,7 +6,8 @@ hostsfile LWRP
 
 Requirements
 ------------
-At this time, you must have a Unix-based machine. This could easily be adapted for Windows machines. Please submit a Pull Request if you wish to add Windows support.
+- Chef 10 or higher
+- Ruby 1.8.7 or higher
 
 Attributes
 ----------
