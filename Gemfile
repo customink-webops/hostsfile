@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 group :test do
   gem 'chef',         '~> 11.0.0'
