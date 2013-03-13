@@ -1,9 +1,8 @@
 GIT
   remote: git://github.com/acrmp/chefspec.git
-  revision: 7775ae20e5cfc701cc02f4d67638bc657299b659
-  ref: 7775ae20
+  revision: 3adad17991b523016ed424a81870f720524c838f
   specs:
-    chefspec (1.0.0)
+    chefspec (1.0.0.rc1)
       chef (>= 10.0)
       erubis
       fauxhai (~> 0.1)
