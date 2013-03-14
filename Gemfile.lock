@@ -1,6 +1,5 @@
-GIT
-  remote: git://github.com/acrmp/chefspec.git
-  revision: 3adad17991b523016ed424a81870f720524c838f
+PATH
+  remote: ~/Development/chefspec
   specs:
     chefspec (1.0.0.rc1)
       chef (>= 10.0)
