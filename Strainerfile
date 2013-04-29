@@ -1,0 +1,2 @@
+knife:  bundle exec knife cookbook test $COOKBOOK
+spec:   bundle exec rspec --color --format documentation

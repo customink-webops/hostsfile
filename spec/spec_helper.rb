@@ -1,10 +1,10 @@
 require 'chefspec'
 require 'fauxhai'
 
-# Require our libraries. They aren't actually loaded early enough to mock.
-Dir['libraries/*'].each do |library|
-  require File.expand_path(library)
-end
+lib = File.expand_path('../../libraries', __FILE__)
+$:.unshift(lib) unless $:.include?(lib)
+require 'entry'
+require 'manipulator'
 
 $cookbook_paths = [
   File.expand_path('../../..', __FILE__),
