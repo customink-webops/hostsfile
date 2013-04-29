@@ -85,6 +85,10 @@ action :remove do
 end
 
 private
-def hostsfile
-  @hostsfile ||= Manipulator.new(node)
-end
+  # The hostsfile object
+  #
+  # @return [Manipulator]
+  #   the manipulator for this hostsfile
+  def hostsfile
+    @hostsfile ||= Manipulator.new(node)
+  end
