@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-require 'entry'
+require_relative 'entry'
 
 require 'chef/application'
 require 'digest/sha2'
