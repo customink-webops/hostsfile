@@ -3,7 +3,8 @@
 .config
 .yardoc
 _yardoc
-coverage
+Gemfile.lock
+coverage/
 doc/
 tmp
 .kitchen/
