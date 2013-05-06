@@ -1,0 +1,30 @@
+---
+driver_plugin: vagrant
+
+platforms:
+  - name: ubuntu-12.04
+    driver_config:
+      box: opscode-ubuntu-12.04
+      box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_chef-11.4.4.box
+  - name: centos-6.3
+    driver_config:
+      box: opscode-centos-6.4
+      box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_chef-11.4.4.box
+
+suites:
+  - name: append
+    run_list: ['recipe[fake::append]']
+  - name: append_existing
+    run_list: ['recipe[fake::append_existing]']
+  - name: create
+    run_list: ['recipe[fake::create]']
+  - name: create_if_missing
+    run_list: ['recipe[fake::create_if_missing]']
+  - name: default
+    run_list: ['recipe[fake::default]']
+  - name: options
+    run_list: ['recipe[fake::options]']
+  # - name: remove
+  #   run_list: ['recipe[fake::remove]']
+  # - name: update
+  #   run_list: ['recipe[fake::update]']
