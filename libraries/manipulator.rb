@@ -131,24 +131,24 @@ class Manipulator
   def save!
     entries = []
     entries << "#"
-    entries << "# Last updated: #{::Time.now}"
-    entries << "#"
     entries << "# This file is managed by Chef, using the hostsfile cookbook."
     entries << "# Editing this file by hand is highly discouraged!"
     entries << "#"
     entries << "# Comments containing an @ sign should not be modified or else"
     entries << "# hostsfile will be unable to guarantee relative priority in"
     entries << "# future Chef runs!"
+    entries << "#"
     entries << ""
     entries += unique_entries.map(&:to_line)
     entries << ""
 
-    contents_sha = Digest::SHA512.hexdigest(entries[3..-1].join("\n"))
+    contents = entries.join("\n")
+    contents_sha = Digest::SHA512.hexdigest(contents)
 
     # Only write out the file if the contents have changed...
     if contents_sha != current_sha
       ::File.open(hostsfile_path, 'w') do |f|
-        f.write(entries.join("\n"))
+        f.write(contents)
       end
     end
   end
@@ -186,7 +186,7 @@ class Manipulator
     # @return [String]
     #   the sha of the current hostsfile
     def current_sha
-      @current_sha ||= Digest::SHA512.hexdigest(File.readlines(hostsfile_path)[3..-1].join(""))
+      @current_sha ||= Digest::SHA512.hexdigest(File.read(hostsfile_path))
     end
 
     # This is a crazy way of ensuring unique objects in an array using a Hash.
