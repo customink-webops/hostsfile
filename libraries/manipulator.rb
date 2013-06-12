@@ -138,8 +138,6 @@ class Manipulator
     entries << "# hostsfile will be unable to guarantee relative priority in"
     entries << "# future Chef runs!"
     entries << "#"
-    entries << "# Last updated: #{::Time.now}"
-    entries << "#"
     entries << ""
     entries += unique_entries.map(&:to_line)
     entries << ""
