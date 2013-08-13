@@ -112,13 +112,20 @@ describe Manipulator do
         manipulator.stub(:find_entry_by_ip_address).with(any_args()).and_return(entry)
       end
 
-      it 'updates the aliases' do
-        entry.should_receive(:aliases=).with(['example.com'])
+      it 'updates the hostname' do
+        entry.should_receive(:hostname=).with('example.com')
         manipulator.append(options)
+      end
+
+      it 'updates the aliases' do
+        entry.should_receive(:aliases=).with(['www.example.com'])
+        entry.should_receive(:hostname=).with('example.com')
+        manipulator.append(options.merge(:aliases => 'www.example.com'))
       end
 
       it 'updates the comment' do
         entry.should_receive(:comment=).with('Some comment, This is a new comment!')
+        entry.should_receive(:hostname=).with('example.com')
         manipulator.append(options.merge(:comment => 'This is a new comment!'))
       end
     end
