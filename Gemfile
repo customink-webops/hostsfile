@@ -3,8 +3,9 @@ source 'https://rubygems.org'
 gem 'chef', '~> 11.6'
 
 group :test do
-  gem 'chefspec',     '~> 1.3'
-  gem 'strainer',     '~> 3.2'
+  gem 'cane',     '~> 2.6'
+  gem 'chefspec', '~> 1.3'
+  gem 'strainer', '~> 3.2'
 end
 
 group :integration do
