@@ -3,6 +3,7 @@
 .config
 .yardoc
 _yardoc
+Berksfile.lock
 Gemfile.lock
 coverage/
 doc/
