@@ -1,7 +1,10 @@
 CHANGELOG
 =========
+v2.0.0
+------
+- Completely manage the hostsfile, ensuring no duplicate entries
 
-master
+v1.0.2
 ------
 - Support Windows (thanks @igantt-daptiv)
 - Specs + Travis support
