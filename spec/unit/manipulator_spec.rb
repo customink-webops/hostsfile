@@ -185,10 +185,10 @@ describe Manipulator do
   end
 
   describe '#save!' do
-    let(:f) { stub('f', :write => true) }
+    let(:file) { double('file', :write => true) }
 
     before do
-      File.stub(:open).and_yield(f)
+      File.stub(:open).and_yield(file)
       manipulator.stub(:unique_entries).and_return(entries)
     end
 
@@ -203,7 +203,7 @@ describe Manipulator do
     context 'when the file has changed' do
       it 'writes out the new file' do
         File.should_receive(:open).with('/etc/hosts', 'w').once
-        f.should_receive(:write).once
+        file.should_receive(:write).once
         manipulator.save!
       end
     end
