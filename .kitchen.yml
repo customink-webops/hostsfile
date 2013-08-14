@@ -1,9 +1,12 @@
 ---
 driver_plugin: vagrant
+driver_config:
+  require_chef_omnibus: true
 
 platforms:
-  - name: ubuntu-12.04
-  - name: centos-6.3
+  - name: ubuntu-12.10
+  - name: ubuntu-13.04
+  - name: centos-6.4
 
 suites:
   - name: append
@@ -18,7 +21,3 @@ suites:
     run_list: ['recipe[fake::default]']
   - name: options
     run_list: ['recipe[fake::options]']
-  # - name: remove
-  #   run_list: ['recipe[fake::remove]']
-  # - name: update
-  #   run_list: ['recipe[fake::update]']
