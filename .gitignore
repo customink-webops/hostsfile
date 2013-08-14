@@ -10,3 +10,4 @@ tmp
 .kitchen/
 .kitchen.local.yml
 bin/
+.rspec
