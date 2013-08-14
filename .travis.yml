@@ -1,7 +1,4 @@
 rvm:
+  - 2.0.0
   - 1.9.3
-  - 1.9.2
-env:
-  - CHEF_VERSION='~> 10.0'
-  - CHEF_VERSION='~> 11.0'
-script: bundle exec strainer test
+script: bundle exec strainer test --except kitchen

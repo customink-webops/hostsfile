@@ -1,2 +1,3 @@
-knife:  bundle exec knife cookbook test $COOKBOOK
-spec:   (cd $COOKBOOK && bundle exec rspec --color --format documentation)
+knife:   bundle exec knife cookbook test $COOKBOOK
+spec:    bundle exec rspec --color --format progress
+kitchen: bundle exec kitchen test
