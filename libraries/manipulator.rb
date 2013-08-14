@@ -39,9 +39,7 @@ class Manipulator
     Chef::Application.fatal! "No hostsfile exists at '#{hostsfile_path}'!" unless ::File.exists?(hostsfile_path)
     contents = ::File.readlines(hostsfile_path)
 
-    @entries = contents.collect do |line|
-      Entry.parse(line) unless line.strip.nil? || line.strip.empty?
-    end.compact
+    @entries = collect_and_flatten(contents)
   end
 
   # Return a list of all IP Addresses for this hostsfile.
@@ -97,8 +95,11 @@ class Manipulator
   # @param (see #add)
   def append(options = {})
     if entry = find_entry_by_ip_address(options[:ip_address])
-      entry.aliases = [ entry.aliases, options[:hostname], options[:aliases] ].flatten.compact.uniq
-      entry.comment = [ entry.comment, options[:comment] ].compact.join(', ') unless entry.comment && entry.comment.include?(options[:comment])
+      hosts = [ entry.hostname, entry.aliases, options[:hostname], options[:aliases] ].flatten.compact.uniq
+      entry.hostname = hosts.shift
+      entry.aliases = hosts
+      entry.comment = [ entry.comment, options[:comment] ].flatten.compact.join(', ') \
+        unless entry.comment && options[:comment] && entry.comment.include?(options[:comment])
     else
       add(options)
     end
@@ -194,39 +195,37 @@ class Manipulator
     # @return [Array]
     #   the sorted list of entires that are unique
     def unique_entries
-      remove_existing_hostnames
-
       entries = Hash[*@entries.map{ |entry| [entry.ip_address, entry] }.flatten].values
       entries.sort_by { |e| [-e.priority.to_i, e.hostname.to_s] }
     end
 
-    # This method ensures that hostnames/aliases and only used once. It
-    # doesn't make sense to allow multiple IPs to have the same hostname
-    # or aliases. This method removes all occurrences of the existing
-    # hostname/aliases from existing records.
+    # Takes /etc/hosts file contents and builds a flattened entries
+    # array so that each IP address has only one line and multiple hostnames
+    # are flattened into a list of aliases
     #
-    # This method also intelligently removes any entries that should no
-    # longer exist.
-    def remove_existing_hostnames
-      new_entry = @entries.pop
-      changed_hostnames = [ new_entry.hostname, new_entry.aliases ].flatten.uniq
-
-      @entries = @entries.collect do |entry|
-        entry.hostname = nil if changed_hostnames.include?(entry.hostname)
-        entry.aliases = entry.aliases - changed_hostnames
-
-        if entry.hostname.nil?
-          if entry.aliases.empty?
-            nil
+    # @param [Array] contents
+    #   Array of lines from /etc/hosts file
+    # @return [Array]
+    #   flattened entries
+    def collect_and_flatten(contents)
+      ip_hash = Hash.new
+      contents.each { |line|
+        entry = Entry.parse(line) unless line.strip.nil? || line.strip.empty?
+        if entry && !entry.ip_address.nil? 
+          matching_entry = ip_hash[entry.ip_address]
+          if matching_entry
+            hosts = [ matching_entry.hostname, matching_entry.aliases, 
+                      entry.aliases, entry.hostname ].flatten.compact.uniq
+            matching_entry.hostname = hosts.shift
+            matching_entry.aliases = hosts
+            matching_entry.comment = [ matching_entry.comment, entry.comment ].flatten.compact.join(', ') \
+              unless matching_entry.comment && entry.comment && matching_entry.comment.include?(entry.comment)
+            ip_hash[entry.ip_address] = matching_entry
           else
-            entry.hostname = entry.aliases.shift
-            entry
+            ip_hash[entry.ip_address] = entry
           end
-        else
-          entry
         end
-      end.compact
-
-      @entries << new_entry
+      }
+      ip_hash.values
     end
 end
