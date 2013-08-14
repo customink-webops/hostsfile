@@ -211,10 +211,10 @@ class Manipulator
       ip_hash = Hash.new
       contents.each { |line|
         entry = Entry.parse(line) unless line.strip.nil? || line.strip.empty?
-        if entry && !entry.ip_address.nil? 
+        if entry && !entry.ip_address.nil?
           matching_entry = ip_hash[entry.ip_address]
           if matching_entry
-            hosts = [ matching_entry.hostname, matching_entry.aliases, 
+            hosts = [ matching_entry.hostname, matching_entry.aliases,
                       entry.aliases, entry.hostname ].flatten.compact.uniq
             matching_entry.hostname = hosts.shift
             matching_entry.aliases = hosts
