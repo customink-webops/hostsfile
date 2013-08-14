@@ -53,11 +53,12 @@ class Entry
 
     private
       def extract_comment(line)
+        return nil if presence(line).nil?
         line.split('#', 2).collect { |part| presence(part) }
       end
 
       def extract_priority(comment)
-        return [nil, nil] if comment.nil?
+        return nil if comment.nil?
 
         if comment.include?('@')
           comment.split('@', 2).collect { |part| presence(part) }
@@ -104,10 +105,10 @@ class Entry
     end
 
     @ip_address = IPAddr.new(options[:ip_address])
-    @hostname = options[:hostname]
-    @aliases = [options[:aliases]].flatten.compact
-    @comment = options[:comment]
-    @priority = options[:priority] || calculated_priority
+    @hostname   = options[:hostname]
+    @aliases    = [options[:aliases]].flatten.compact
+    @comment    = options[:comment]
+    @priority   = options[:priority] || calculated_priority
   end
 
   # Set a the new priority for an entry.
