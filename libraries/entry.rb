@@ -104,7 +104,7 @@ class Entry
       raise ArgumentError, ':ip_address and :hostname are both required options'
     end
 
-    @ip_address = IPAddr.new(options[:ip_address])
+    @ip_address = IPAddr.new(options[:ip_address].to_s)
     @hostname   = options[:hostname]
     @aliases    = [options[:aliases]].flatten.compact
     @comment    = options[:comment]

@@ -36,10 +36,12 @@ class Manipulator
     @node = node.to_hash
 
     # Fail if no hostsfile is found
-    Chef::Application.fatal! "No hostsfile exists at '#{hostsfile_path}'!" unless ::File.exists?(hostsfile_path)
-    contents = ::File.readlines(hostsfile_path)
+    unless ::File.exists?(hostsfile_path)
+      Chef::Application.fatal! "No hostsfile exists at '#{hostsfile_path}'!"
+    end
 
-    @entries = collect_and_flatten(contents)
+    @entries = []
+    collect_and_flatten(::File.readlines(hostsfile_path))
   end
 
   # Return a list of all IP Addresses for this hostsfile.
@@ -68,11 +70,11 @@ class Manipulator
   #   the relative priority of this entry (compared to others)
   def add(options = {})
     @entries << Entry.new(
-      :ip_address   => options[:ip_address],
-      :hostname     => options[:hostname],
-      :aliases      => options[:aliases],
-      :comment      => options[:comment],
-      :priority     => options[:priority]
+      :ip_address => options[:ip_address],
+      :hostname   => options[:hostname],
+      :aliases    => options[:aliases],
+      :comment    => options[:comment],
+      :priority   => options[:priority],
     )
   end
 
@@ -95,11 +97,13 @@ class Manipulator
   # @param (see #add)
   def append(options = {})
     if entry = find_entry_by_ip_address(options[:ip_address])
-      hosts = [ entry.hostname, entry.aliases, options[:hostname], options[:aliases] ].flatten.compact.uniq
+      hosts          = normalize(entry.hostname, entry.aliases, options[:hostname], options[:aliases])
       entry.hostname = hosts.shift
-      entry.aliases = hosts
-      entry.comment = [ entry.comment, options[:comment] ].flatten.compact.join(', ') \
-        unless entry.comment && options[:comment] && entry.comment.include?(options[:comment])
+      entry.aliases  = hosts
+
+      unless entry.comment && options[:comment] && entry.comment.include?(options[:comment])
+        entry.comment = normalize(entry.comment, options[:comment]).join(', ')
+      end
     else
       add(options)
     end
@@ -190,6 +194,17 @@ class Manipulator
       @current_sha ||= Digest::SHA512.hexdigest(File.read(hostsfile_path))
     end
 
+    # Normalize the given list of elements into a single array with no nil
+    # values and no duplicate values.
+    #
+    # @param [Object] things
+    #
+    # @return [Array]
+    #   a normalized array of things
+    def normalize(*things)
+      things.flatten.compact.uniq
+    end
+
     # This is a crazy way of ensuring unique objects in an array using a Hash.
     #
     # @return [Array]
@@ -201,31 +216,22 @@ class Manipulator
 
     # Takes /etc/hosts file contents and builds a flattened entries
     # array so that each IP address has only one line and multiple hostnames
-    # are flattened into a list of aliases
+    # are flattened into a list of aliases.
     #
     # @param [Array] contents
     #   Array of lines from /etc/hosts file
-    # @return [Array]
-    #   flattened entries
     def collect_and_flatten(contents)
-      ip_hash = Hash.new
-      contents.each { |line|
-        entry = Entry.parse(line) unless line.strip.nil? || line.strip.empty?
-        if entry && !entry.ip_address.nil?
-          matching_entry = ip_hash[entry.ip_address]
-          if matching_entry
-            hosts = [ matching_entry.hostname, matching_entry.aliases,
-                      entry.aliases, entry.hostname ].flatten.compact.uniq
-            matching_entry.hostname = hosts.shift
-            matching_entry.aliases = hosts
-            matching_entry.comment = [ matching_entry.comment, entry.comment ].flatten.compact.join(', ') \
-              unless matching_entry.comment && entry.comment && matching_entry.comment.include?(entry.comment)
-            ip_hash[entry.ip_address] = matching_entry
-          else
-            ip_hash[entry.ip_address] = entry
-          end
-        end
-      }
-      ip_hash.values
+      contents.each do |line|
+        entry = Entry.parse(line)
+        next if entry.nil?
+
+        append(
+          :ip_address => entry.ip_address,
+          :hostname   => entry.hostname,
+          :aliases    => entry.aliases,
+          :comment    => entry.comment,
+          :priority   => entry.priority,
+        )
+      end
     end
 end
