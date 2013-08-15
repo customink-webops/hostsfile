@@ -161,6 +161,14 @@ class Entry
     ].join(', ') + '>'
   end
 
+  # Returns true if priority is calculated
+  #
+  # @return [Boolean]
+  #   true if priority is calculated and false otherwise
+  def calculated_priority?
+    @calculated_priority
+  end
+
   private
 
     # Calculates the relative priority of this entry.
