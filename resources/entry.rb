@@ -19,7 +19,7 @@
 #
 
 # List of all actions supported by the provider
-actions :create, :create_if_missing, :append, :update, :remove
+actions :create, :create_if_missing, :append, :update, :remove, :create_by_host
 
 # Make create the default action
 default_action :create
