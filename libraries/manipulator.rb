@@ -69,13 +69,13 @@ class Manipulator
   # @option options [Fixnum] :priority
   #   the relative priority of this entry (compared to others)
   def add(options = {})
-    @entries << Entry.new(
+    @entries << Entry.new({
       :ip_address => options[:ip_address],
       :hostname   => options[:hostname],
       :aliases    => options[:aliases],
       :comment    => options[:comment],
       :priority   => options[:priority],
-    )
+    })
   end
 
   # Update an existing entry. This method will do nothing if the entry
@@ -85,6 +85,19 @@ class Manipulator
   def update(options = {})
     if entry = find_entry_by_ip_address(options[:ip_address])
       entry.hostname  = options[:hostname]
+      entry.aliases   = options[:aliases]
+      entry.comment   = options[:comment]
+      entry.priority  = options[:priority]
+    end
+  end
+
+  # Update an existing entry. This method will do nothing if the entry
+  # does not exist.
+  #
+  # @param (see #add)
+  def update_by_hostname(options = {})
+    if entry = find_entry_by_hostname(options[:hostname])
+      entry.ip_address = options[:ip_address]
       entry.aliases   = options[:aliases]
       entry.comment   = options[:comment]
       entry.priority  = options[:priority]
@@ -170,6 +183,18 @@ class Manipulator
     end
   end
 
+  # Find an entry by the given IP Address.
+  #
+  # @param [String] ip_address
+  #   the IP Address of the entry to detect
+  # @return [Entry, nil]
+  #   the corresponding entry object, or nil if it does not exist
+  def find_entry_by_hostname(hostname)
+    @entries.detect do |entry|
+      !entry.hostname.nil? && entry.hostname == hostname
+    end
+  end
+
   private
 
     # The path to the current hostsfile.
@@ -225,13 +250,13 @@ class Manipulator
         entry = Entry.parse(line)
         next if entry.nil?
 
-        append(
+        append({
           :ip_address => entry.ip_address,
           :hostname   => entry.hostname,
           :aliases    => entry.aliases,
           :comment    => entry.comment,
           :priority   => !entry.calculated_priority? && entry.priority,
-        )
+        })
       end
     end
 end

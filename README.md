@@ -72,7 +72,7 @@ would yield an /etc/hosts file like this:
     2.3.4.5          www.example.com
 
 #### `create`
-Creates a new hosts file entry. If an entry already exists, it will be overwritten by this one.
+Creates a new hosts file entry. If an entry with this same ip already exists, it will be overwritten by this one.
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
@@ -84,6 +84,27 @@ end
 This will create an entry like this:
 
     1.2.3.4          example.com
+
+#### `create_by_host`
+Creates a new hosts file entry. If an entry with this same hostname but different ip already exists, the ip will be overwritten by this one.
+
+```ruby
+hostsfile_entry '5.5.5.5' do
+  hostname  'example.com'
+  action    :create_by_host
+end
+```
+
+If an entry like this already exists:
+
+    1.2.3.4          example.com
+
+It will be overwritten as :
+
+    5.5.5.5          example.com
+
+If absent, it will be created.
+
 
 #### `create_if_missing`
 Create a new hosts file entry, only if one does not already exist for the given IP address. If one exists, this does nothing.

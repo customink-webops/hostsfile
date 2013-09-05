@@ -32,6 +32,29 @@ action :create do
   new_resource.updated_by_last_action(true) if hostsfile.save!
 end
 
+action :create_by_host do
+  if hostsfile.find_entry_by_hostname(new_resource.hostname).nil?
+    hostsfile.add(
+      :ip_address => new_resource.ip_address,
+      :hostname => new_resource.hostname,
+      :aliases => new_resource.aliases,
+      :comment => new_resource.comment,
+      :priority => new_resource.priority
+    )
+    new_resource.updated_by_last_action(true) if hostsfile.save!
+  else
+    hostsfile.update_by_hostname(
+      :ip_address => new_resource.ip_address,
+      :hostname => new_resource.hostname,
+      :aliases => new_resource.aliases,
+      :comment => new_resource.comment,
+      :priority => new_resource.priority
+    )
+    new_resource.updated_by_last_action(true) if hostsfile.save!
+  end
+end
+
+
 # Create a new hosts file entry, only if one does not already exist for
 # the given IP address. If one exists, this does nothing.
 action :create_if_missing do
