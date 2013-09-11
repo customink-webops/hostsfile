@@ -2,14 +2,14 @@ hostsfile LWRP
 ==============
 [![Build Status](https://travis-ci.org/customink-webops/hostsfile.png?branch=master)](https://travis-ci.org/customink-webops/hostsfile)
 
-`hostsfile` provides an LWRP for managing your hosts file using Chef.
+`hostsfile` provides an LWRP for managing your `/etc/hosts` (or Windows equivalent) file using Chef.
 
 Requirements
 ------------
 - Chef 11 or higher
-- Ruby 1.9.3 or higher
+- **Ruby 1.9.3 or higher**
 
-Note: Any of the `1.x.y` series of this cookbook will work with Chef 10 and Ruby 1.8.7.
+**Please stop opening Pull Requests to restore Ruby 1.8 support!** Any of the `1.x.y` series of this cookbook will work with Chef 10 and Ruby 1.8. You can use Opscode's [Omnibus installer](http://www.opscode.com/blog/2012/06/29/omnibus-chef-packaging/) to install Ruby 1.9+ and Seth Chisamore's [Vagrant Omnibus plugin](https://github.com/schisamo/vagrant-omnibus) to get Ruby 1.9+ on your Vagrant box.
 
 Attributes
 ----------
