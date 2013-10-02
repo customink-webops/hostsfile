@@ -3,7 +3,8 @@
 # Cookbook:: hostsfile
 # Library:: entry
 #
-# Copyright 2012, Seth Vargo, CustomInk, LCC
+# Copyright 2012-2013, Seth Vargo
+# Copyright 2012, CustomInk, LCC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -43,11 +44,11 @@ class Entry
       return nil if entries.nil? || entries.empty?
 
       return self.new(
-        :ip_address => entries[0],
-        :hostname => entries[1],
-        :aliases => entries[2..-1],
-        :comment => comment,
-        :priority => priority
+        ip_address: entries[0],
+        hostname:   entries[1],
+        aliases:    entries[2..-1],
+        comment:    comment,
+        priority:   priority,
       )
     end
 

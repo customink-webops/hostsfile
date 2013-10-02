@@ -1,4 +1,0 @@
---abc-glob {libraries,providers,resources}/**/*.rb
---style-glob {libraries,providers,resources}/**/*.rb
---style-measure 120
---no-readme

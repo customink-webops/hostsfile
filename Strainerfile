@@ -1,3 +1,0 @@
-cane:    bundle exec cane --color
-rspec:   bundle exec rspec --color --format progress
-kitchen: bundle exec kitchen test

@@ -14,49 +14,49 @@ describe Entry do
       end
 
       it 'parses just an ip_address and hostname' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => nil, :priority => nil)
+        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: nil, priority: nil)
         Entry.parse('1.2.3.4      www.example.com')
       end
 
       it 'parses aliases' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => ['foo', 'bar'], :comment => nil, :priority => nil)
+        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: nil, priority: nil)
         Entry.parse('1.2.3.4      www.example.com foo bar')
       end
 
       it 'parses a comment' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => 'This is a comment!', :priority => nil)
+        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: 'This is a comment!', priority: nil)
         Entry.parse('1.2.3.4      www.example.com     # This is a comment!')
       end
 
       it 'parses aliases and comments' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => ['foo', 'bar'], :comment => 'This is a comment!', :priority => nil)
+        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: 'This is a comment!', priority: nil)
         Entry.parse('1.2.3.4      www.example.com foo bar     # This is a comment!')
       end
 
       it 'parses priorities with comments' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => 'This is a comment!', :priority => '40')
+        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: 'This is a comment!', priority: '40')
         Entry.parse('1.2.3.4      www.example.com     # This is a comment! @40')
       end
 
       it 'parses priorities' do
-        Entry.should_receive(:new).with(:ip_address => '1.2.3.4', :hostname => 'www.example.com', :aliases => [], :comment => nil, :priority => '40')
+        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: nil, priority: '40')
         Entry.parse('1.2.3.4      www.example.com     # @40')
       end
     end
   end
 
   describe '.initialize' do
-    subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com', :aliases => ['foo', 'bar'], :comment => 'This is a comment!', :priority => 100) }
+    subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: 'This is a comment!', priority: 100) }
 
     it 'raises an exception if :ip_address is missing' do
       expect {
-        Entry.new(:hostname => 'www.example.com')
+        Entry.new(hostname: 'www.example.com')
       }.to raise_error(ArgumentError)
     end
 
     it 'raises an exception if :hostname is missing' do
       expect {
-        Entry.new(:ip_address => '2.3.4.5')
+        Entry.new(ip_address: '2.3.4.5')
       }.to raise_error(ArgumentError)
     end
 
@@ -83,7 +83,7 @@ describe Entry do
     end
 
     context 'with no options' do
-      subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com') }
+      subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com') }
 
       it 'sets @aliases to an empty array' do
         expect(subject.aliases).to be_empty
@@ -95,12 +95,12 @@ describe Entry do
 
       it 'calls calculated_priority for @priority' do
         Entry.any_instance.should_receive(:calculated_priority)
-        Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com')
+        Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com')
       end
     end
 
     context 'with aliases as a string' do
-      subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com', :aliases => 'foo') }
+      subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com', aliases: 'foo') }
 
       it 'sets the @aliases to be an Array' do
         expect(subject.aliases).to be_a(Array)
@@ -110,7 +110,7 @@ describe Entry do
   end
 
   describe '#priority=' do
-    subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com') }
+    subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com') }
 
     it 'sets the new priority' do
       subject.priority = 50
@@ -125,7 +125,7 @@ describe Entry do
 
   describe '#to_line' do
     context 'without a comment' do
-      subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com') }
+      subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com') }
 
       it 'prints without aliases' do
         expect(subject.to_line).to eq("2.3.4.5\twww.example.com")
@@ -143,7 +143,7 @@ describe Entry do
     end
 
     context 'with a comment' do
-      subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com', :comment => 'This is a comment!') }
+      subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com', comment: 'This is a comment!') }
 
       it 'prints without aliases' do
         expect(subject.to_line).to eq("2.3.4.5\twww.example.com\t# This is a comment!")
@@ -162,7 +162,7 @@ describe Entry do
   end
 
   describe '#to_s' do
-    subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com') }
+    subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com') }
 
     it 'prints correctly' do
       expect(subject.to_s).to eq("#<Entry ip_address: '2.3.4.5', hostname: 'www.example.com'>")
@@ -185,7 +185,7 @@ describe Entry do
   end
 
   describe '#inspect' do
-    subject { Entry.new(:ip_address => '2.3.4.5', :hostname => 'www.example.com') }
+    subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com') }
 
     it 'prints correctly' do
       expect(subject.inspect).to eq("#<Entry ip_address: '2.3.4.5', hostname: 'www.example.com', aliases: [], comment: '', priority: 60, calculated_priority?: true>")

@@ -1,15 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'chef', '~> 11.6'
-
-group :test do
-  gem 'cane',     '~> 2.6'
-  gem 'chefspec', '~> 1.3'
-  gem 'strainer', '~> 3.2'
-end
+gem 'berkshelf',  '~> 2.0'
+gem 'chefspec',   '~> 2.0'
+gem 'foodcritic', '~> 3.0'
 
 group :integration do
-  gem 'berkshelf',          '~> 2.0'
-  gem 'test-kitchen',       '~> 1.0.0.beta'
-  gem 'kitchen-vagrant',    '~> 0.11'
+  gem 'test-kitchen',    '~> 1.0.0.beta'
+  gem 'kitchen-vagrant', path: '~/Development/kitchen-vagrant' #~> 0.11'
 end
