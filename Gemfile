@@ -6,5 +6,5 @@ gem 'foodcritic', '~> 3.0'
 
 group :integration do
   gem 'test-kitchen',    '~> 1.0.0.beta'
-  gem 'kitchen-vagrant', path: '~/Development/kitchen-vagrant' #~> 0.11'
+  gem 'kitchen-vagrant', '~> 0.11.1'
 end
