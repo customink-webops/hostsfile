@@ -13,19 +13,19 @@ describe Manipulator do
 
   let(:entries) do
     [
-      double('entry_1', ip_address: '127.0.0.1', hostname: 'localhost',       to_line: '127.0.0.1  localhost'),
-      double('entry_2', ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com'),
-      double('entry_3', ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com')
+      double('entry_1', ip_address: '127.0.0.1', hostname: 'localhost',       to_line: '127.0.0.1  localhost',     priority: 10),
+      double('entry_2', ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
+      double('entry_3', ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30)
     ]
   end
+
+  let(:manipulator) { Manipulator.new(node) }
 
   before do
     File.stub(:exists?).and_return(true)
     File.stub(:readlines).and_return(lines)
     manipulator.instance_variable_set(:@entries, entries)
   end
-
-  let(:manipulator) { Manipulator.new(node) }
 
   describe '.initialize' do
     it 'saves the given node to a hash' do
@@ -169,20 +169,6 @@ describe Manipulator do
   end
 
   describe '#save' do
-    it 'delegates to #save! and returns true' do
-      manipulator.stub(:save!)
-      manipulator.should_receive(:save!).once
-      expect(manipulator.save).to be_true
-    end
-
-    it 'returns false if an exception is raised' do
-      manipulator.stub(:save!).and_raise(Exception)
-      manipulator.should_receive(:save!).once
-      expect(manipulator.save).to be_false
-    end
-  end
-
-  describe '#save!' do
     let(:file) { double('file', write: true) }
 
     before do
@@ -194,7 +180,7 @@ describe Manipulator do
       it 'does not write out the file' do
         Digest::SHA512.stub(:hexdigest).and_return('abc123')
         File.should_not_receive(:open)
-        manipulator.save!
+        manipulator.save
       end
     end
 
@@ -202,7 +188,7 @@ describe Manipulator do
       it 'writes out the new file' do
         File.should_receive(:open).with('/etc/hosts', 'w').once
         file.should_receive(:write).once
-        manipulator.save!
+        manipulator.save
       end
     end
   end

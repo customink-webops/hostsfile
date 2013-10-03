@@ -80,7 +80,6 @@ class Manipulator
 
     @entries << entry
     remove_existing_hostnames(entry) if options[:unique]
-    save
   end
 
   # Update an existing entry. This method will do nothing if the entry
@@ -95,7 +94,6 @@ class Manipulator
       entry.priority  = options[:priority]
 
       remove_existing_hostnames(entry) if options[:unique]
-      save
     end
   end
 
@@ -114,7 +112,6 @@ class Manipulator
       end
 
       remove_existing_hostnames(entry) if options[:unique]
-      save
     else
       add(options)
     end
@@ -128,7 +125,6 @@ class Manipulator
     if entry = find_entry_by_ip_address(ip_address)
       @entries.delete(entry)
     end
-    save
   end
 
   # Save the new hostsfile to the target machine. This method will only write the

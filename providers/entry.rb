@@ -40,6 +40,7 @@ action :create do
       priority:   new_resource.priority,
       unique:     new_resource.unique,
     )
+    hostsfile.save
   end
 end
 
@@ -58,6 +59,7 @@ action :create_if_missing do
         priority:   new_resource.priority,
         unique:     new_resource.unique,
       )
+      hostsfile.save
     end
   end
 end
@@ -78,6 +80,7 @@ action :append do
       priority:   new_resource.priority,
       unique:     new_resource.unique,
     )
+    hostsfile.save
   end
 end
 
@@ -94,6 +97,7 @@ action :update do
         priority:   new_resource.priority,
         unique:     new_resource.unique,
       )
+      hostsfile.save
     end
   else
     Chef::Log.info "#{new_resource} does not exist - skipping update."
@@ -106,6 +110,7 @@ action :remove do
   if hostsfile.contains?(new_resource)
     converge_by("Remove #{new_resource}") do
       hostsfile.remove(new_resource.ip_address)
+      hostsfile.save
     end
   else
     Chef::Log.info "#{new_resource} does not exist - skipping remove."
