@@ -3,6 +3,11 @@ hostsfile Cookbook CHANGELOG
 This file
  is used to list changes made in each version of the hostsfile cookbook.
 
+v2.4.1
+------
+- Force a new upload to the community site
+
+
 v2.4.0
 ------
 - Convert everything to Ruby 1.9 syntax because I'm tired of people removing trailing commas despite the **massive** warning in the README: ([#29](https://github.com/customink-webops/hostsfile/issues/29), [#30](https://github.com/customink-webops/hostsfile/issues/30), [#32](https://github.com/customink-webops/hostsfile/issues/32), [#33](https://github.com/customink-webops/hostsfile/issues/33), [#34](https://github.com/customink-webops/hostsfile/issues/34), [#35](https://github.com/customink-webops/hostsfile/issues/35), [#36](https://github.com/customink-webops/hostsfile/issues/36), [#38](https://github.com/customink-webops/hostsfile/issues/38), [#39](https://github.com/customink-webops/hostsfile/issues/39))
