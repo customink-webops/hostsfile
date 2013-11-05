@@ -24,6 +24,7 @@ require 'digest/sha2'
 
 class Manipulator
   attr_reader :node
+  attr_reader :entries
 
   # Create a new Manipulator object (aka an /etc/hosts manipulator). If a
   # hostsfile is not found, a Chef::Application.fatal is risen, causing
@@ -249,7 +250,7 @@ class Manipulator
       @entries.delete(entry)
       changed_hostnames = [entry.hostname, entry.aliases].flatten.uniq
 
-      @entries.collect do |entry|
+      @entries = @entries.collect do |entry|
         entry.hostname = nil if changed_hostnames.include?(entry.hostname)
         entry.aliases  = entry.aliases - changed_hostnames
 
@@ -264,6 +265,7 @@ class Manipulator
           entry
         end
       end.compact
+
 
       @entries << entry
 

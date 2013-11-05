@@ -136,32 +136,6 @@ class Entry
     [ip_address, hosts, comments].compact.join("\t").strip
   end
 
-  # The string representation of this Entry
-  #
-  # @return [String]
-  #   the string representation of this entry
-  def to_s
-    "#<#{self.class.to_s} " + [
-      "ip_address: '#{ip_address}'",
-      "hostname: '#{hostname}'",
-    ].join(', ') + '>'
-  end
-
-  # The object representation of this Entry
-  #
-  # @return [String]
-  #   the object representation of this entry
-  def inspect
-    "#<#{self.class.to_s} " + [
-      "ip_address: '#{ip_address}'",
-      "hostname: '#{hostname}'",
-      "aliases: #{aliases.inspect}",
-      "comment: '#{comment}'",
-      "priority: #{priority}",
-      "calculated_priority?: #{@calculated_priority}",
-    ].join(', ') + '>'
-  end
-
   # Returns true if priority is calculated
   #
   # @return [Boolean]

@@ -13,9 +13,9 @@ describe Manipulator do
 
   let(:entries) do
     [
-      double('entry_1', ip_address: '127.0.0.1', hostname: 'localhost',       to_line: '127.0.0.1  localhost',     priority: 10),
-      double('entry_2', ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
-      double('entry_3', ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30)
+      Entry.new(ip_address: '127.0.0.1', hostname: 'localhost',       to_line: '127.0.0.1  localhost',     priority: 10),
+      Entry.new(ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
+      Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30)
     ]
   end
 
@@ -202,6 +202,43 @@ describe Manipulator do
 
     it 'returns nil if the entry does not exist' do
       expect(manipulator.find_entry_by_ip_address('77.77.77.77')).to be_nil
+    end
+  end
+
+  describe '#remove_exisitng_hostnames' do
+    before { manipulator.class.send(:public, :remove_existing_hostnames) }
+
+    context 'with no duplicates' do
+      it 'does not change anything' do
+        entry = Entry.new(ip_address: '7.8.9.10', hostname: 'new.example.com')
+        entries << entry
+
+        expect {
+          manipulator.remove_existing_hostnames(entry)
+        }.to_not change(manipulator, :entries)
+      end
+    end
+
+    context 'with duplicate hostnames' do
+      it 'removes the duplicate hostnames' do
+        entry = Entry.new(ip_address: '7.8.9.10', hostname: 'example.com')
+        entries << entry
+
+        manipulator.remove_existing_hostnames(entry)
+        expect(manipulator.entries).to_not include(entries[1])
+      end
+    end
+
+    context 'with duplicate aliases' do
+      it 'removes the duplicate aliases' do
+        entry = Entry.new(ip_address: '7.8.9.10', hostname: 'bar.example.com')
+        entries << entry
+        entries[1].aliases = ['bar.example.com']
+
+        manipulator.remove_existing_hostnames(entry)
+        expect(manipulator.entries).to include(entries[1])
+        expect(manipulator.entries[1].aliases).to be_empty
+      end
     end
   end
 end
