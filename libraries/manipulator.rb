@@ -266,7 +266,6 @@ class Manipulator
         end
       end.compact
 
-
       @entries << entry
 
       nil
