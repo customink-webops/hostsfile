@@ -173,6 +173,8 @@ Have any other cookbooks *depend* on hostsfile by editing editing the `metadata.
 depends 'hostsfile'
 ```
 
+Note that you can specify a custom path to your hosts file in the `['hostsfile']['path']` node attribute. Otherwise, it defaults to sensible paths depending on your OS.
+
 
 Priority
 --------
