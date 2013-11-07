@@ -182,13 +182,15 @@ class Manipulator
     #
     # @return [String]
     #   the full path to the hostsfile, depending on the operating system
+    #   can also be overriden in the node attributes
     def hostsfile_path
-      @hostsfile_path ||= case node['platform_family']
-                          when 'windows'
-                            "#{node['kernel']['os_info']['system_directory']}\\drivers\\etc\\hosts"
-                          else
-                            '/etc/hosts'
-                          end
+      return @hostsfile_path if @hostsfile_path
+      @hostsfile_path = node['hostsfile']['path'] || case node['platform_family']
+                                                     when 'windows'
+                                                       "#{node['kernel']['os_info']['system_directory']}\\drivers\\etc\\hosts"
+                                                     else
+                                                       '/etc/hosts'
+                                                     end
     end
 
     # The current sha of the system hostsfile.

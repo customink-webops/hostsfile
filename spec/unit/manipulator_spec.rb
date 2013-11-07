@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Manipulator do
-  let(:node) { double('node', to_hash: { foo: 'bar' }) }
+  let(:node_default_attributes) { { 'hostsfile' => { 'path' => nil } } }
+  let(:node) { double('node', :to_hash => node_default_attributes) }
 
   let(:lines) do
     [
@@ -205,7 +206,31 @@ describe Manipulator do
     end
   end
 
-  describe '#remove_exisitng_hostnames' do
+  describe '#hostsfile_path' do
+    before do
+      manipulator.class.send(:public, :hostsfile_path)
+      File.stub(:exists?).and_return(true)
+    end
+
+    context 'with no node attribute specified' do
+      it 'returns /etc/hosts on a *nix machine' do
+        expect(manipulator.hostsfile_path).to eq('/etc/hosts')
+      end
+      it 'returns C:\Windows\system32\drivers\etc\hosts on a Windows machine' do
+        windows_attributes = node_default_attributes.merge({ 'platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } } })
+        expect(Manipulator.new(windows_attributes).hostsfile_path).to eq('C:\Windows\system32\drivers\etc\hosts')
+      end
+    end
+
+    context 'with a custom hostsfile node attribute' do
+      it 'returns the custom path' do
+        custom_path = '/custom/path'
+        expect(Manipulator.new(node_default_attributes.merge({'hostsfile' => { 'path' => custom_path } })).hostsfile_path).to eq(custom_path)
+      end
+    end
+  end
+
+  describe '#remove_existing_hostnames' do
     before { manipulator.class.send(:public, :remove_existing_hostnames) }
 
     context 'with no duplicates' do
