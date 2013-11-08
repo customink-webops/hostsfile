@@ -3,6 +3,13 @@ hostsfile Cookbook CHANGELOG
 This file
  is used to list changes made in each version of the hostsfile cookbook.
 
+v2.4.2
+------
+- Fix Travis CI integration
+- Remove newline characters
+- Allow specifying a custom hostsfile path
+
+
 v2.4.1
 ------
 - Force a new upload to the community site
