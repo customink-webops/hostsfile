@@ -175,6 +175,23 @@ depends 'hostsfile'
 
 Note that you can specify a custom path to your hosts file in the `['hostsfile']['path']` node attribute. Otherwise, it defaults to sensible paths depending on your OS.
 
+### Testing
+If you are using [ChefSpec](https://github.com/sethvargo/chefspec) to unit test a cookbook that implements the `hostsfile_entry` LWRP, this cookbook packages customer matchers that you can use in your unit tests:
+
+- `append_hostsfile_entry`
+- `create_hostsfile_entry`
+- `create_hostsfile_entry_if_missing`
+- `remove_hostsfile_entry`
+- `update_hostsfile_entry`
+
+For example:
+
+```ruby
+it 'creates a hostsfile entry for the DNS server' do
+  expect(chef_run).to create_hostsfile_entry('1.2.3.4')
+    .with_hostname('dns.example.com')
+end
+```
 
 Priority
 --------
