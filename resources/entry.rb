@@ -26,11 +26,11 @@ actions :create, :create_if_missing, :append, :update, :remove
 default_action :create
 
 # Required attributes
-attribute :ip_address, kind_of: String, name_attribute: true
-attribute :hostname,   kind_of: String
+attribute :ip_address, :kind_of => String, :name_attribute => true
+attribute :hostname,   :kind_of => String
 
 # Optional attributes
-attribute :aliases,  kind_of: Array
-attribute :comment,  kind_of: String
-attribute :priority, kind_of: Fixnum
-attribute :unique,   kind_of: [TrueClass, FalseClass]
+attribute :aliases,  :kind_of => Array
+attribute :comment,  :kind_of => String
+attribute :priority, :kind_of => Fixnum
+attribute :unique,   :kind_of => [TrueClass, FalseClass]
