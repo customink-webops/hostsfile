@@ -33,12 +33,12 @@ action :create do
 
   converge_by("Create #{new_resource}") do
     hostsfile.add(
-      ip_address: new_resource.ip_address,
-      hostname:   new_resource.hostname,
-      aliases:    new_resource.aliases,
-      comment:    new_resource.comment,
-      priority:   new_resource.priority,
-      unique:     new_resource.unique,
+      :ip_address => new_resource.ip_address,
+      :hostname   => new_resource.hostname,
+      :aliases    => new_resource.aliases,
+      :comment    => new_resource.comment,
+      :priority   => new_resource.priority,
+      :unique     => new_resource.unique
     )
     hostsfile.save
   end
@@ -52,12 +52,12 @@ action :create_if_missing do
   else
     converge_by("Create #{new_resource} if missing") do
       hostsfile.add(
-        ip_address: new_resource.ip_address,
-        hostname:   new_resource.hostname,
-        aliases:    new_resource.aliases,
-        comment:    new_resource.comment,
-        priority:   new_resource.priority,
-        unique:     new_resource.unique,
+        :ip_address => new_resource.ip_address,
+        :hostname   => new_resource.hostname,
+        :aliases    => new_resource.aliases,
+        :comment    => new_resource.comment,
+        :priority   => new_resource.priority,
+        :unique     => new_resource.unique
       )
       hostsfile.save
     end
@@ -73,12 +73,12 @@ action :append do
 
   converge_by("Append #{new_resource}") do
     hostsfile.append(
-      ip_address: new_resource.ip_address,
-      hostname:   new_resource.hostname,
-      aliases:    new_resource.aliases,
-      comment:    new_resource.comment,
-      priority:   new_resource.priority,
-      unique:     new_resource.unique,
+      :ip_address => new_resource.ip_address,
+      :hostname   => new_resource.hostname,
+      :aliases    => new_resource.aliases,
+      :comment    => new_resource.comment,
+      :priority   => new_resource.priority,
+      :unique     => new_resource.unique
     )
     hostsfile.save
   end
@@ -90,12 +90,12 @@ action :update do
   if hostsfile.contains?(new_resource)
     converge_by("Update #{new_resource}") do
       hostsfile.update(
-        ip_address: new_resource.ip_address,
-        hostname:   new_resource.hostname,
-        aliases:    new_resource.aliases,
-        comment:    new_resource.comment,
-        priority:   new_resource.priority,
-        unique:     new_resource.unique,
+        :ip_address => new_resource.ip_address,
+        :hostname   => new_resource.hostname,
+        :aliases    => new_resource.aliases,
+        :comment    => new_resource.comment,
+        :priority   => new_resource.priority,
+        :unique     => new_resource.unique
       )
       hostsfile.save
     end
