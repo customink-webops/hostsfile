@@ -27,19 +27,18 @@ class Manipulator
   attr_reader :entries
 
   # Create a new Manipulator object (aka an /etc/hosts manipulator). If a
-  # hostsfile is not found, a Chef::Application.fatal is risen, causing
-  # the process to terminate on the node and the converge will fail.
+  # hostsfile is not found, an exception is raised.
   #
   # @param [Chef::node] node
   #   the current Chef node
   # @return [Manipulator]
   #   a class designed to manipulate the node's /etc/hosts file
   def initialize(node)
-    @node = node.to_hash
+    @node = node
 
     # Fail if no hostsfile is found
     unless ::File.exists?(hostsfile_path)
-      Chef::Application.fatal! "No hostsfile exists at '#{hostsfile_path}'!"
+      raise RuntimeError, "No hostsfile exists at `#{hostsfile_path}'!"
     end
 
     @entries = []
