@@ -3,6 +3,15 @@ hostsfile Cookbook CHANGELOG
 This file
  is used to list changes made in each version of the hostsfile cookbook.
 
+v2.4.3 (2014-02-01)
+-------------------
+
+- Package custom ChefSpec matchers
+- Update testing harness
+- Avoid using `Chef::Application.fatal!`
+- Use Chef::Resource::File for atomic updates
+
+
 v2.4.2
 ------
 - Fix Travis CI integration
