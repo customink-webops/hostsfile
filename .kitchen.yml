@@ -1,29 +1,25 @@
-driver_plugin: vagrant
-driver_config:
-  require_chef_omnibus: true
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 11.8.0
 
 platforms:
-  - name: ubuntu-12.10
+  - name: ubuntu-12.04
 
 suites:
   - name: append
-    run_list:
-      - recipe[fake::append]
+    run_list: fake::append
   - name: append_existing
-    run_list:
-      - recipe[fake::append_existing]
+    run_list: fake::append_existing
   - name: create
-    run_list:
-      - recipe[fake::create]
+    run_list: fake::create
   - name: create_if_missing
-    run_list:
-      - recipe[fake::create_if_missing]
+    run_list: fake::create_if_missing
   - name: default
-    run_list:
-      - recipe[fake::default]
+    run_list: fake::default
   - name: options
-    run_list:
-      - recipe[fake::options]
+    run_list: fake::options
   - name: unique
-    run_list:
-      - recipe[fake::unique]
+    run_list: fake::unique
