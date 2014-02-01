@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe Manipulator do
-  let(:node_default_attributes) { { 'hostsfile' => { 'path' => nil } } }
-  let(:node) { double('node', :to_hash => node_default_attributes) }
+  let(:node) do
+    { 'hostsfile' => { 'path' => nil } }
+  end
 
   let(:lines) do
     [
@@ -29,20 +30,14 @@ describe Manipulator do
   end
 
   describe '.initialize' do
-    it 'saves the given node to a hash' do
-      node.should_receive(:to_hash).once
-      Manipulator.new(node)
-    end
-
     it 'saves the node hash to an instance variable' do
       manipulator = Manipulator.new(node)
-      expect(manipulator.node).to eq(node.to_hash)
+      expect(manipulator.node).to be(node)
     end
 
     it 'raises a fatal error if the hostsfile does not exist' do
       File.stub(:exists?).and_return(false)
-      Chef::Application.should_receive(:fatal!).once.and_raise(SystemExit)
-      expect { Manipulator.new(node) }.to raise_error(SystemExit)
+      expect { Manipulator.new(node) }.to raise_error(RuntimeError)
     end
 
     it 'sends the line to be parsed by the Entry class' do
@@ -170,27 +165,19 @@ describe Manipulator do
   end
 
   describe '#save' do
-    let(:file) { double('file', write: true) }
+    let(:file) { double('file', content: nil, run_action: nil) }
 
     before do
-      File.stub(:open).and_yield(file)
+      Chef::Resource::File.stub(:new).and_return(file)
       manipulator.stub(:unique_entries).and_return(entries)
+      node.stub(:run_context)
     end
 
-    context 'when the file has not changed' do
-      it 'does not write out the file' do
-        Digest::SHA512.stub(:hexdigest).and_return('abc123')
-        File.should_not_receive(:open)
-        manipulator.save
-      end
-    end
-
-    context 'when the file has changed' do
-      it 'writes out the new file' do
-        File.should_receive(:open).with('/etc/hosts', 'w').once
-        file.should_receive(:write).once
-        manipulator.save
-      end
+    it 'writes out the new file' do
+      expect(Chef::Resource::File).to receive(:new).with('/etc/hosts', nil)
+      expect(file).to receive(:content).once
+      expect(file).to receive(:run_action).with(:create).once
+      manipulator.save
     end
   end
 
@@ -217,7 +204,7 @@ describe Manipulator do
         expect(manipulator.hostsfile_path).to eq('/etc/hosts')
       end
       it 'returns C:\Windows\system32\drivers\etc\hosts on a Windows machine' do
-        windows_attributes = node_default_attributes.merge({ 'platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } } })
+        windows_attributes = node.merge({ 'platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } } })
         expect(Manipulator.new(windows_attributes).hostsfile_path).to eq('C:\Windows\system32\drivers\etc\hosts')
       end
     end
@@ -225,7 +212,7 @@ describe Manipulator do
     context 'with a custom hostsfile node attribute' do
       it 'returns the custom path' do
         custom_path = '/custom/path'
-        expect(Manipulator.new(node_default_attributes.merge({'hostsfile' => { 'path' => custom_path } })).hostsfile_path).to eq(custom_path)
+        expect(Manipulator.new(node.merge({'hostsfile' => { 'path' => custom_path } })).hostsfile_path).to eq(custom_path)
       end
     end
   end

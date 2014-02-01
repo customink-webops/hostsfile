@@ -143,15 +143,9 @@ class Manipulator
     entries += unique_entries.map(&:to_line)
     entries << ''
 
-    contents = entries.join("\n")
-    contents_sha = Digest::SHA512.hexdigest(contents)
-
-    # Only write out the file if the contents have changed...
-    if contents_sha != current_sha
-      ::File.open(hostsfile_path, 'w') do |f|
-        f.write(contents)
-      end
-    end
+    file = Chef::Resource::File.new(hostsfile_path, node.run_context)
+    file.content(entries.join("\n"))
+    file.run_action(:create)
   end
 
   # Find an entry by the given IP Address.
