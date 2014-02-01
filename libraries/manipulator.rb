@@ -178,98 +178,99 @@ class Manipulator
   end
 
   private
-    # The path to the current hostsfile.
-    #
-    # @return [String]
-    #   the full path to the hostsfile, depending on the operating system
-    #   can also be overriden in the node attributes
-    def hostsfile_path
-      return @hostsfile_path if @hostsfile_path
-      @hostsfile_path = node['hostsfile']['path'] || case node['platform_family']
-                                                     when 'windows'
-                                                       "#{node['kernel']['os_info']['system_directory']}\\drivers\\etc\\hosts"
-                                                     else
-                                                       '/etc/hosts'
-                                                     end
+
+  # The path to the current hostsfile.
+  #
+  # @return [String]
+  #   the full path to the hostsfile, depending on the operating system
+  #   can also be overriden in the node attributes
+  def hostsfile_path
+    return @hostsfile_path if @hostsfile_path
+    @hostsfile_path = node['hostsfile']['path'] || case node['platform_family']
+                                                   when 'windows'
+                                                     "#{node['kernel']['os_info']['system_directory']}\\drivers\\etc\\hosts"
+                                                   else
+                                                     '/etc/hosts'
+                                                   end
+  end
+
+  # The current sha of the system hostsfile.
+  #
+  # @return [String]
+  #   the sha of the current hostsfile
+  def current_sha
+    @current_sha ||= Digest::SHA512.hexdigest(File.read(hostsfile_path))
+  end
+
+  # Normalize the given list of elements into a single array with no nil
+  # values and no duplicate values.
+  #
+  # @param [Object] things
+  #
+  # @return [Array]
+  #   a normalized array of things
+  def normalize(*things)
+    things.flatten.compact.uniq
+  end
+
+  # This is a crazy way of ensuring unique objects in an array using a Hash.
+  #
+  # @return [Array]
+  #   the sorted list of entires that are unique
+  def unique_entries
+    entries = Hash[*@entries.map { |entry| [entry.ip_address, entry] }.flatten].values
+    entries.sort_by { |e| [-e.priority.to_i, e.hostname.to_s] }
+  end
+
+  # Takes /etc/hosts file contents and builds a flattened entries
+  # array so that each IP address has only one line and multiple hostnames
+  # are flattened into a list of aliases.
+  #
+  # @param [Array] contents
+  #   Array of lines from /etc/hosts file
+  def collect_and_flatten(contents)
+    contents.each do |line|
+      entry = Entry.parse(line)
+      next if entry.nil?
+
+      append(
+        ip_address: entry.ip_address,
+        hostname:   entry.hostname,
+        aliases:    entry.aliases,
+        comment:    entry.comment,
+        priority:   !entry.calculated_priority? && entry.priority,
+      )
     end
+  end
 
-    # The current sha of the system hostsfile.
-    #
-    # @return [String]
-    #   the sha of the current hostsfile
-    def current_sha
-      @current_sha ||= Digest::SHA512.hexdigest(File.read(hostsfile_path))
-    end
+  # Removes duplicate hostnames in other files ensuring they are unique
+  #
+  # @param [Entry] entry
+  #   the entry to keep the hostname and aliases from
+  #
+  # @return [nil]
+  def remove_existing_hostnames(entry)
+    @entries.delete(entry)
+    changed_hostnames = [entry.hostname, entry.aliases].flatten.uniq
 
-    # Normalize the given list of elements into a single array with no nil
-    # values and no duplicate values.
-    #
-    # @param [Object] things
-    #
-    # @return [Array]
-    #   a normalized array of things
-    def normalize(*things)
-      things.flatten.compact.uniq
-    end
+    @entries = @entries.collect do |entry|
+      entry.hostname = nil if changed_hostnames.include?(entry.hostname)
+      entry.aliases  = entry.aliases - changed_hostnames
 
-    # This is a crazy way of ensuring unique objects in an array using a Hash.
-    #
-    # @return [Array]
-    #   the sorted list of entires that are unique
-    def unique_entries
-      entries = Hash[*@entries.map { |entry| [entry.ip_address, entry] }.flatten].values
-      entries.sort_by { |e| [-e.priority.to_i, e.hostname.to_s] }
-    end
-
-    # Takes /etc/hosts file contents and builds a flattened entries
-    # array so that each IP address has only one line and multiple hostnames
-    # are flattened into a list of aliases.
-    #
-    # @param [Array] contents
-    #   Array of lines from /etc/hosts file
-    def collect_and_flatten(contents)
-      contents.each do |line|
-        entry = Entry.parse(line)
-        next if entry.nil?
-
-        append(
-          ip_address: entry.ip_address,
-          hostname:   entry.hostname,
-          aliases:    entry.aliases,
-          comment:    entry.comment,
-          priority:   !entry.calculated_priority? && entry.priority,
-        )
-      end
-    end
-
-    # Removes duplicate hostnames in other files ensuring they are unique
-    #
-    # @param [Entry] entry
-    #   the entry to keep the hostname and aliases from
-    #
-    # @return [nil]
-    def remove_existing_hostnames(entry)
-      @entries.delete(entry)
-      changed_hostnames = [entry.hostname, entry.aliases].flatten.uniq
-
-      @entries = @entries.collect do |entry|
-        entry.hostname = nil if changed_hostnames.include?(entry.hostname)
-        entry.aliases  = entry.aliases - changed_hostnames
-
-        if entry.hostname.nil?
-          if entry.aliases.empty?
-            nil
-          else
-            entry.hostname = entry.aliases.shift
-            entry
-          end
+      if entry.hostname.nil?
+        if entry.aliases.empty?
+          nil
         else
+          entry.hostname = entry.aliases.shift
           entry
         end
-      end.compact
+      else
+        entry
+      end
+    end.compact
 
-      @entries << entry
+    @entries << entry
 
-      nil
-    end
+    nil
+  end
 end

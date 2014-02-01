@@ -53,31 +53,32 @@ class Entry
     end
 
     private
-      def extract_comment(line)
-        return nil if presence(line).nil?
-        line.split('#', 2).collect { |part| presence(part) }
-      end
 
-      def extract_priority(comment)
-        return nil if comment.nil?
+    def extract_comment(line)
+      return nil if presence(line).nil?
+      line.split('#', 2).collect { |part| presence(part) }
+    end
 
-        if comment.include?('@')
-          comment.split('@', 2).collect { |part| presence(part) }
-        else
-          [comment, nil]
-        end
-      end
+    def extract_priority(comment)
+      return nil if comment.nil?
 
-      def extract_entries(entry)
-        return nil if entry.nil?
-        entry.split(/\s+/).collect { |entry| presence(entry) }.compact
+      if comment.include?('@')
+        comment.split('@', 2).collect { |part| presence(part) }
+      else
+        [comment, nil]
       end
+    end
 
-      def presence(string)
-        return nil if string.nil?
-        return nil if string.strip.empty?
-        string.strip
-      end
+    def extract_entries(entry)
+      return nil if entry.nil?
+      entry.split(/\s+/).collect { |entry| presence(entry) }.compact
+    end
+
+    def presence(string)
+      return nil if string.nil?
+      return nil if string.strip.empty?
+      string.strip
+    end
   end
 
   # @return [String]
@@ -146,17 +147,17 @@ class Entry
 
   private
 
-    # Calculates the relative priority of this entry.
-    #
-    # @return [Fixnum]
-    #   the relative priority of this item
-    def calculated_priority
-      @calculated_priority = true
+  # Calculates the relative priority of this entry.
+  #
+  # @return [Fixnum]
+  #   the relative priority of this item
+  def calculated_priority
+    @calculated_priority = true
 
-      return 81 if ip_address == IPAddr.new('127.0.0.1')
-      return 80 if IPAddr.new('127.0.0.0/8').include?(ip_address) # local
-      return 60 if ip_address.ipv4? # ipv4
-      return 20 if ip_address.ipv6? # ipv6
-      return 00
-    end
+    return 81 if ip_address == IPAddr.new('127.0.0.1')
+    return 80 if IPAddr.new('127.0.0.0/8').include?(ip_address) # local
+    return 60 if ip_address.ipv4? # ipv4
+    return 20 if ip_address.ipv6? # ipv6
+    return 00
+  end
 end
