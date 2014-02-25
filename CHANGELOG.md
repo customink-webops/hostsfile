@@ -3,6 +3,12 @@ hostsfile Cookbook CHANGELOG
 This file
  is used to list changes made in each version of the hostsfile cookbook.
 
+v2.4.4 (2014-02-25)
+-------------------
+- Bump Berkshelf version
+- Remove scope pieces from IPv6 addresses
+
+
 v2.4.3 (2014-02-01)
 -------------------
 
