@@ -106,7 +106,7 @@ class Entry
       raise ArgumentError, ':ip_address and :hostname are both required options'
     end
 
-    @ip_address = IPAddr.new(options[:ip_address].to_s)
+    @ip_address = IPAddr.new(remove_ip_scope(options[:ip_address]))
     @hostname   = options[:hostname]
     @aliases    = [options[:aliases]].flatten.compact
     @comment    = options[:comment]
@@ -159,5 +159,17 @@ class Entry
     return 60 if ip_address.ipv4? # ipv4
     return 20 if ip_address.ipv6? # ipv6
     return 00
+  end
+
+  # Removes the scopes pieces of the address, because reasons.
+  #
+  # @see https://bugs.ruby-lang.org/issues/8464
+  # @see https://github.com/customink-webops/hostsfile/issues/51
+  #
+  # @return [String, nil]
+  #
+  def remove_ip_scope(address)
+    return nil if address.nil?
+    address.to_s.sub(/%.*/, '')
   end
 end

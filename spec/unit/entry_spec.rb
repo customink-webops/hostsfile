@@ -65,6 +65,11 @@ describe Entry do
       expect(subject.ip_address).to eq(IPAddr.new('2.3.4.5'))
     end
 
+    it 'removes IPV6 scope pieces' do
+      instance = Entry.new(ip_address: 'fe80::1%lo0', hostname: 'www.example.com')
+      expect(instance.ip_address).to eq(IPAddr.new('fe80::1'))
+    end
+
     it 'sets the @hostname instance variable' do
       expect(subject.hostname).to eq('www.example.com')
     end
