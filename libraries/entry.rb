@@ -45,10 +45,10 @@ class Entry
 
       # If /etc/hosts has a broken content we throw a descriptive exception
       if entries[0].nil?
-        raise ArgumentError, '/etc/hosts has a line without IP address'
+        raise ArgumentError, "/etc/hosts has a line without IP address: #{line}"
       end
       if entries[1].nil?
-        raise ArgumentError, '/etc/hosts has a line without hostname'
+        raise ArgumentError, "/etc/hosts has a line without hostname: #{line}"
       end
 
       return self.new(
