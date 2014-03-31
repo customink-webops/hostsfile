@@ -43,6 +43,14 @@ class Entry
       # Return nil if the line is empty
       return nil if entries.nil? || entries.empty?
 
+      # If /etc/hosts has a broken content we throw a descriptive exception
+      if entries[0].nil?
+        raise ArgumentError, "/etc/hosts has a line without IP address: #{line}"
+      end
+      if entries[1].nil?
+        raise ArgumentError, "/etc/hosts has a line without hostname: #{line}"
+      end
+
       return self.new(
         ip_address: entries[0],
         hostname:   entries[1],
