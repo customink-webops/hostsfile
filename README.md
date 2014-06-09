@@ -108,7 +108,7 @@ end
 ```
 
 #### `append`
-Append a hostname or alias to an existing record. If the given IP address doesn't not already exist in the hostsfile, this method behaves the same as create. Otherwise, it will append the additional hostname and aliases to the existing entry.
+Append a hostname or alias to an existing record. If the given IP address doesn't already exist in the hostsfile, this method behaves the same as create. Otherwise, it will append the additional hostname and aliases to the existing entry.
 
     1.2.3.4         example.com www.example.com # Created by Chef
 
