@@ -31,16 +31,19 @@ action :create do
     Chef::Log.debug "#{new_resource} already exists - overwriting."
   end
 
-  converge_by("Create #{new_resource}") do
-    hostsfile.add(
-      ip_address: new_resource.ip_address,
-      hostname:   new_resource.hostname,
-      aliases:    new_resource.aliases,
-      comment:    new_resource.comment,
-      priority:   new_resource.priority,
-      unique:     new_resource.unique,
-    )
-    hostsfile.save
+  hostsfile.add(
+    ip_address: new_resource.ip_address,
+    hostname:   new_resource.hostname,
+    aliases:    new_resource.aliases,
+    comment:    new_resource.comment,
+    priority:   new_resource.priority,
+    unique:     new_resource.unique,
+  )
+
+  if hostsfile.content_changed?
+    converge_by("Create #{new_resource}") { hostsfile.save }
+  else
+    Chef::Log.info "#{new_resource} content already matches - nothing to do."
   end
 end
 
@@ -71,16 +74,19 @@ action :append do
     Chef::Log.info "#{new_resource} does not exist - creating instead."
   end
 
-  converge_by("Append #{new_resource}") do
-    hostsfile.append(
-      ip_address: new_resource.ip_address,
-      hostname:   new_resource.hostname,
-      aliases:    new_resource.aliases,
-      comment:    new_resource.comment,
-      priority:   new_resource.priority,
-      unique:     new_resource.unique,
-    )
-    hostsfile.save
+  hostsfile.append(
+    ip_address: new_resource.ip_address,
+    hostname:   new_resource.hostname,
+    aliases:    new_resource.aliases,
+    comment:    new_resource.comment,
+    priority:   new_resource.priority,
+    unique:     new_resource.unique,
+  )
+
+  if hostsfile.content_changed?
+    converge_by("Append #{new_resource}") { hostsfile.save }
+  else
+    Chef::Log.info "#{new_resource} content already matches - nothing to do."
   end
 end
 
@@ -88,16 +94,20 @@ end
 # exist.
 action :update do
   if hostsfile.contains?(new_resource)
-    converge_by("Update #{new_resource}") do
-      hostsfile.update(
-        ip_address: new_resource.ip_address,
-        hostname:   new_resource.hostname,
-        aliases:    new_resource.aliases,
-        comment:    new_resource.comment,
-        priority:   new_resource.priority,
-        unique:     new_resource.unique,
-      )
-      hostsfile.save
+
+    hostsfile.update(
+      ip_address: new_resource.ip_address,
+      hostname:   new_resource.hostname,
+      aliases:    new_resource.aliases,
+      comment:    new_resource.comment,
+      priority:   new_resource.priority,
+      unique:     new_resource.unique,
+    )
+
+    if hostsfile.content_changed?
+      converge_by("Update #{new_resource}") { hostsfile.save }
+    else
+      Chef::Log.info "#{new_resource} content already matches - nothing to do."
     end
   else
     Chef::Log.info "#{new_resource} does not exist - skipping update."
