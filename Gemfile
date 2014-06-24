@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'berkshelf',  '~> 3.0.0.beta'
-gem 'chefspec',   '~> 3.2'
+gem 'berkshelf',  '~> 3.1'
+gem 'chefspec',   '~> 4.0'
 gem 'foodcritic', '~> 3.0'
 
 group :integration do

@@ -10,36 +10,36 @@ describe Entry do
       let(:entry) { double('entry') }
 
       before do
-        Entry.stub(:new).and_return(entry)
+        allow(Entry).to receive(:new).and_return(entry)
       end
 
       it 'parses just an ip_address and hostname' do
-        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: nil, priority: nil)
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: nil, priority: nil)
         Entry.parse('1.2.3.4      www.example.com')
       end
 
       it 'parses aliases' do
-        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: nil, priority: nil)
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: nil, priority: nil)
         Entry.parse('1.2.3.4      www.example.com foo bar')
       end
 
       it 'parses a comment' do
-        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: 'This is a comment!', priority: nil)
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: 'This is a comment!', priority: nil)
         Entry.parse('1.2.3.4      www.example.com     # This is a comment!')
       end
 
       it 'parses aliases and comments' do
-        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: 'This is a comment!', priority: nil)
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: 'This is a comment!', priority: nil)
         Entry.parse('1.2.3.4      www.example.com foo bar     # This is a comment!')
       end
 
       it 'parses priorities with comments' do
-        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: 'This is a comment!', priority: '40')
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: 'This is a comment!', priority: '40')
         Entry.parse('1.2.3.4      www.example.com     # This is a comment! @40')
       end
 
       it 'parses priorities' do
-        Entry.should_receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: nil, priority: '40')
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: [], comment: nil, priority: '40')
         Entry.parse('1.2.3.4      www.example.com     # @40')
       end
     end
@@ -99,7 +99,7 @@ describe Entry do
       end
 
       it 'calls calculated_priority for @priority' do
-        Entry.any_instance.should_receive(:calculated_priority)
+        expect_any_instance_of(Entry).to receive(:calculated_priority)
         Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com')
       end
     end
@@ -124,7 +124,7 @@ describe Entry do
 
     it 'sets @calculated_priority to false' do
       subject.priority = 50
-      expect(subject.instance_variable_get(:@calculated_priority)).to be_false
+      expect(subject.instance_variable_get(:@calculated_priority)).to be_falsey
     end
   end
 

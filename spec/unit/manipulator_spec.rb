@@ -25,8 +25,8 @@ describe Manipulator do
   let(:header) { manipulator.hostsfile_header }
 
   before do
-    File.stub(:exists?).and_return(true)
-    File.stub(:readlines).and_return(lines)
+    allow(File).to receive(:exists?).and_return(true)
+    allow(File).to receive(:readlines).and_return(lines)
     manipulator.instance_variable_set(:@entries, entries)
   end
 
@@ -37,12 +37,12 @@ describe Manipulator do
     end
 
     it 'raises a fatal error if the hostsfile does not exist' do
-      File.stub(:exists?).and_return(false)
+      allow(File).to receive(:exists?).and_return(false)
       expect { Manipulator.new(node) }.to raise_error(RuntimeError)
     end
 
     it 'sends the line to be parsed by the Entry class' do
-      lines.each { |l| Entry.should_receive(:parse).with(l) }
+      lines.each { |l| allow(Entry).to receive(:parse).with(l) }
       Manipulator.new(node)
     end
   end
@@ -58,10 +58,10 @@ describe Manipulator do
 
     let(:options) { { ip_address: '1.2.3.4', hostname: 'example.com', aliases: nil, comment: 'Some comment', priority: 5 } }
 
-    before { Entry.stub(:new).and_return(entry) }
+    before { allow(Entry).to receive(:new).and_return(entry) }
 
     it 'creates a new entry object' do
-      Entry.should_receive(:new).with(options)
+      allow(Entry).to receive(:new).with(options)
       manipulator.add(options)
     end
 
@@ -74,7 +74,9 @@ describe Manipulator do
   describe '#update' do
     context 'when the entry does not exist' do
       before do
-        manipulator.stub(:find_entry_by_ip_address).with(any_args()).and_return(nil)
+        allow(manipulator).to receive(:find_entry_by_ip_address)
+          .with(any_args())
+          .and_return(nil)
       end
 
       it 'does nothing' do
@@ -87,11 +89,13 @@ describe Manipulator do
       let(:entry) { double('entry', :hostname= => nil, :aliases= => nil, :comment= => nil, :priority= => nil) }
 
       before do
-        manipulator.stub(:find_entry_by_ip_address).with(any_args()).and_return(entry)
+        allow(manipulator).to receive(:find_entry_by_ip_address)
+          .with(any_args())
+          .and_return(entry)
       end
 
       it 'updates the hostname' do
-        entry.should_receive(:hostname=).with('seth.com')
+        allow(entry).to receive(:hostname=).with('seth.com')
         manipulator.update(ip_address: '1.2.3.4', hostname: 'seth.com')
       end
     end
@@ -104,35 +108,39 @@ describe Manipulator do
       let(:entry) { double('entry', options.merge(:aliases= => nil, :comment= => nil)) }
 
       before do
-        manipulator.stub(:find_entry_by_ip_address).with(any_args()).and_return(entry)
+        allow(manipulator).to receive(:find_entry_by_ip_address)
+          .with(any_args())
+          .and_return(entry)
       end
 
       it 'updates the hostname' do
-        entry.should_receive(:hostname=).with('example.com')
+        allow(entry).to receive(:hostname=).with('example.com')
         manipulator.append(options)
       end
 
       it 'updates the aliases' do
-        entry.should_receive(:aliases=).with(['www.example.com'])
-        entry.should_receive(:hostname=).with('example.com')
+        allow(entry).to receive(:aliases=).with(['www.example.com'])
+        allow(entry).to receive(:hostname=).with('example.com')
         manipulator.append(options.merge(aliases: 'www.example.com'))
       end
 
       it 'updates the comment' do
-        entry.should_receive(:comment=).with('Some comment, This is a new comment!')
-        entry.should_receive(:hostname=).with('example.com')
+        allow(entry).to receive(:comment=).with('Some comment, This is a new comment!')
+        allow(entry).to receive(:hostname=).with('example.com')
         manipulator.append(options.merge(comment: 'This is a new comment!'))
       end
     end
 
     context 'when the record does not exist' do
       before do
-        manipulator.stub(:find_entry_by_ip_address).with(any_args()).and_return(nil)
-        manipulator.stub(:add)
+        allow(manipulator).to receive(:find_entry_by_ip_address)
+          .with(any_args())
+          .and_return(nil)
+        allow(manipulator).to receive(:add)
       end
 
       it 'delegates to #add' do
-        manipulator.should_receive(:add).with(options).once
+        allow(manipulator).to receive(:add).with(options).once
         manipulator.append(options)
       end
     end
@@ -141,7 +149,7 @@ describe Manipulator do
   describe '#remove' do
     context 'when the entry does not exist' do
       before do
-        manipulator.stub(:find_entry_by_ip_address).with(any_args()).and_return(nil)
+        allow(manipulator).to receive(:find_entry_by_ip_address).with(any_args()).and_return(nil)
       end
 
       it 'does nothing' do
@@ -154,7 +162,9 @@ describe Manipulator do
       let(:entry) { entries[0] }
 
       before do
-        manipulator.stub(:find_entry_by_ip_address).with(any_args()).and_return(entry)
+        allow(manipulator).to receive(:find_entry_by_ip_address)
+          .with(any_args())
+          .and_return(entry)
       end
 
       it 'removes the entry' do
@@ -171,7 +181,7 @@ describe Manipulator do
     before do
       manipulator.class.send(:public, :new_content)
       manipulator.class.send(:public, :hostsfile_header)
-      manipulator.stub(:unique_entries).and_return(entries)
+      allow(manipulator).to receive(:unique_entries).and_return(entries)
     end
 
     it 'starts with comment header' do
@@ -189,20 +199,20 @@ describe Manipulator do
     end
 
     before do
-      File.stub(:read).and_return(current_content)
-      manipulator.stub(:unique_entries).and_return(entries)
+      allow(File).to receive(:read).and_return(current_content)
+      allow(manipulator).to receive(:unique_entries).and_return(entries)
     end
 
     context 'when content has not changed' do
       it 'returns false' do
-        expect(manipulator.content_changed?).to be_false
+        expect(manipulator.content_changed?).to be_falsey
       end
     end
 
     context 'when content has changed' do
       it 'returns true' do
         manipulator.remove('4.5.6.7')
-        expect(manipulator.content_changed?).to be_true
+        expect(manipulator.content_changed?).to be_truthy
       end
     end
   end
@@ -223,9 +233,9 @@ describe Manipulator do
     let(:file) { double('file', content: nil, run_action: nil) }
 
     before do
-      Chef::Resource::File.stub(:new).and_return(file)
-      manipulator.stub(:unique_entries).and_return(entries)
-      node.stub(:run_context)
+      allow(Chef::Resource::File).to receive(:new).and_return(file)
+      allow(manipulator).to receive(:unique_entries).and_return(entries)
+      allow(node).to receive(:run_context)
     end
 
     it 'writes out the new file' do
@@ -251,7 +261,7 @@ describe Manipulator do
   describe '#hostsfile_path' do
     before do
       manipulator.class.send(:public, :hostsfile_path)
-      File.stub(:exists?).and_return(true)
+      allow(File).to receive(:exists?).and_return(true)
     end
 
     context 'with no node attribute specified' do
