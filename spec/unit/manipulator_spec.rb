@@ -22,6 +22,7 @@ describe Manipulator do
   end
 
   let(:manipulator) { Manipulator.new(node) }
+  let(:header) { manipulator.hostsfile_header }
 
   before do
     File.stub(:exists?).and_return(true)
@@ -160,6 +161,60 @@ describe Manipulator do
         expect(manipulator.instance_variable_get(:@entries)).to include(entry)
         manipulator.remove('5.4.3.2')
         expect(manipulator.instance_variable_get(:@entries)).to_not include(entry)
+      end
+    end
+  end
+
+  describe '#new_content' do
+    let(:entries_string) { entries.map(&:to_line).join("\n").concat("\n") }
+
+    before do
+      manipulator.class.send(:public, :new_content)
+      manipulator.class.send(:public, :hostsfile_header)
+      manipulator.stub(:unique_entries).and_return(entries)
+    end
+
+    it 'starts with comment header' do
+      expect(manipulator.new_content).to start_with(header.join("\n").concat("\n"))
+    end
+
+    it 'ends with all unique entry lines' do
+      expect(manipulator.new_content).to end_with(entries_string)
+    end
+  end
+
+  describe '#content_changed?' do
+    let(:current_content) do
+      (header << entries.map(&:to_line) << '').flatten.join("\n")
+    end
+
+    before do
+      File.stub(:read).and_return(current_content)
+      manipulator.stub(:unique_entries).and_return(entries)
+    end
+
+    context 'when content has not changed' do
+      it 'returns false' do
+        expect(manipulator.content_changed?).to be_false
+      end
+    end
+
+    context 'when content has changed' do
+      it 'returns true' do
+        manipulator.remove('4.5.6.7')
+        expect(manipulator.content_changed?).to be_true
+      end
+    end
+  end
+
+  describe '#hostsfile_header' do
+    it 'is an array' do
+      expect(manipulator.hostsfile_header).to be_an(Array)
+    end
+
+    it 'each line is blank or starts with comment' do
+      manipulator.hostsfile_header.each do |item|
+        expect(item).to match(/^(\s*|#.*)/)
       end
     end
   end
