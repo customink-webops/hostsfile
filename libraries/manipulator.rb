@@ -130,22 +130,18 @@ class Manipulator
   # Save the new hostsfile to the target machine. This method will only write the
   # hostsfile if the current version has changed. In other words, it is convergent.
   def save
-    entries = []
-    entries << '#'
-    entries << '# This file is managed by Chef, using the hostsfile cookbook.'
-    entries << '# Editing this file by hand is highly discouraged!'
-    entries << '#'
-    entries << '# Comments containing an @ sign should not be modified or else'
-    entries << '# hostsfile will be unable to guarantee relative priority in'
-    entries << '# future Chef runs!'
-    entries << '#'
-    entries << ''
-    entries += unique_entries.map(&:to_line)
-    entries << ''
-
     file = Chef::Resource::File.new(hostsfile_path, node.run_context)
-    file.content(entries.join("\n"))
+    file.content(new_content)
     file.run_action(:create)
+  end
+
+  # Determine if the content of the hostfile has changed by comparing sha
+  # values of existing file and new content
+  #
+  # @return [Boolean]
+  def content_changed?
+    new_sha = Digest::SHA512.hexdigest(new_content)
+    new_sha != current_sha
   end
 
   # Find an entry by the given IP Address.
@@ -185,6 +181,34 @@ class Manipulator
                                                    else
                                                      '/etc/hosts'
                                                    end
+  end
+
+  # The header of the new hostsfile
+  #
+  # @return [Array]
+  #   an array of header comments
+  def hostsfile_header
+    lines = []
+    lines << '#'
+    lines << '# This file is managed by Chef, using the hostsfile cookbook.'
+    lines << '# Editing this file by hand is highly discouraged!'
+    lines << '#'
+    lines << '# Comments containing an @ sign should not be modified or else'
+    lines << '# hostsfile will be unable to guarantee relative priority in'
+    lines << '# future Chef runs!'
+    lines << '#'
+    lines << ''
+  end
+
+  # The content that will be written to the hostfile
+  #
+  # @return [String]
+  #   the full contents of the hostfile to be written
+  def new_content
+    entries = hostsfile_header
+    entries += unique_entries.map(&:to_line)
+    entries << ''
+    entries.join("\n")
   end
 
   # The current sha of the system hostsfile.
