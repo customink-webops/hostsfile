@@ -1,7 +1,12 @@
 hostsfile Cookbook CHANGELOG
 =======================
-This file
- is used to list changes made in each version of the hostsfile cookbook.
+This file is used to list changes made in each version of the hostsfile cookbook.
+
+
+v2.4.5 (2014-06-24)
+-------------------
+- Fix notifications and why-run mode
+
 
 v2.4.4 (2014-02-25)
 -------------------
