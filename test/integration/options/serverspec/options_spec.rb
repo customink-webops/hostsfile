@@ -1,5 +1,5 @@
 require 'serverspec'
-include Serverspec::Helper::Exec
+set :backend, :exec
 
 describe 'hostsfile_entry - options' do
   it 'appends all options to the entry' do

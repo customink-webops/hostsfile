@@ -1,5 +1,5 @@
 require 'serverspec'
-include Serverspec::Helper::Exec
+set :backend, :exec
 
 describe 'hostsfile_entry - append' do
   it 'creates a new entry if one does not already exist' do

@@ -1,5 +1,5 @@
 require 'serverspec'
-include Serverspec::Helper::Exec
+set :backend, :exec
 
 describe 'hostsfile_entry - create_if_missing' do
   it 'creates a new entry if one is missing' do
