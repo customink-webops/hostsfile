@@ -1,5 +1,5 @@
 require 'serverspec'
-include Serverspec::Helper::Exec
+set :backend, :exec
 
 describe 'hostsfile_entry - unique' do
   it 'removes existing hostnames when unique is specified' do

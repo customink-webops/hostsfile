@@ -1,5 +1,5 @@
 require 'serverspec'
-include Serverspec::Helper::Exec
+set :backend, :exec
 
 describe 'hostsfile_entry - default' do
   it 'creates a new entry' do
