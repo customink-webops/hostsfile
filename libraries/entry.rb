@@ -162,7 +162,8 @@ class Entry
   def calculated_priority
     @calculated_priority = true
 
-    return 81 if ip_address == IPAddr.new('127.0.0.1')
+    return 82 if ip_address == IPAddr.new('127.0.0.1')
+    return 81 if ip_address == IPAddr.new('::1')
     return 80 if IPAddr.new('127.0.0.0/8').include?(ip_address) # local
     return 60 if ip_address.ipv4? # ipv4
     return 20 if ip_address.ipv6? # ipv6

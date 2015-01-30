@@ -8,6 +8,7 @@ describe Manipulator do
   let(:lines) do
     [
       "127.0.0.1  localhost",
+      "::1  localhost6",
       "1.2.3.4  example.com",
       "4.5.6.7  foo.example.com"
     ]
@@ -16,6 +17,7 @@ describe Manipulator do
   let(:entries) do
     [
       Entry.new(ip_address: '127.0.0.1', hostname: 'localhost',       to_line: '127.0.0.1  localhost',     priority: 10),
+      Entry.new(ip_address: '::1', hostname: 'localhost6',       to_line: '::1  localhost6',     priority: 11),
       Entry.new(ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
       Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30)
     ]
@@ -249,8 +251,9 @@ describe Manipulator do
   describe '#find_entry_by_ip_address' do
     it 'finds the associated entry' do
       expect(manipulator.find_entry_by_ip_address('127.0.0.1')).to eq(entries[0])
-      expect(manipulator.find_entry_by_ip_address('1.2.3.4')).to eq(entries[1])
-      expect(manipulator.find_entry_by_ip_address('4.5.6.7')).to eq(entries[2])
+      expect(manipulator.find_entry_by_ip_address('::1')).to eq(entries[1])
+      expect(manipulator.find_entry_by_ip_address('1.2.3.4')).to eq(entries[2])
+      expect(manipulator.find_entry_by_ip_address('4.5.6.7')).to eq(entries[3])
     end
 
     it 'returns nil if the entry does not exist' do
