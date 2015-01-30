@@ -2,6 +2,10 @@ hostsfile Cookbook CHANGELOG
 =======================
 This file is used to list changes made in each version of the hostsfile cookbook.
 
+v2.4.5 (pending release)
+-------------------
+- Expand priority documentation in README
+- Add ::1 loopback to test cases and priority settings
 
 v2.4.5 (2014-06-24)
 -------------------

@@ -197,9 +197,12 @@ Priority
 --------
 Priority is a relatively new addition to the cookbook. It gives you the ability to (somewhat) specify the relative order of entries. By default, the priority is calculated for you as follows:
 
-1. Local, loopback
-2. IPV4
-3. IPV6
+82. 127.0.0.1
+81. ::1
+80. 127.0.0.0/8
+60. IPV4
+20. IPV6
+00. default
 
 However, you can override it using the `priority` option.
 
