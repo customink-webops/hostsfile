@@ -202,6 +202,7 @@ Priority is a relatively new addition to the cookbook. It gives you the ability 
 80. 127.0.0.0/8
 60. IPV4
 20. IPV6
+00. default
 
 However, you can override it using the `priority` option.
 
