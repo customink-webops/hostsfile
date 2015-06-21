@@ -208,8 +208,7 @@ class Manipulator
     entries = hostsfile_header
     entries += unique_entries.map(&:to_line)
     entries << ''
-    line_ending = "\n"
-    line_ending = "\r\n" if node['platform_family'] == 'windows'
+    line_ending = node['platform_family'] == 'windows' ? "\r\n" : "\n"
     entries.join(line_ending)
   end
 
