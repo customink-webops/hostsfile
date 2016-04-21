@@ -135,14 +135,36 @@ class Entry
   # @return [String]
   #   the string representation of this entry
   def to_line
-    hosts = [hostname, aliases].flatten.join(' ')
+    hosts = [hostname, aliases].flatten
 
+    # Windows only allows 9 hostname entries per line
+    # It does support multiple lines for an ip to cover that
+    if Chef::Platform.windows? && hosts.size > 9
+      comments = entry_comment(comment, priority)
+      results = []
+      while hosts.size>0
+        hosts_set = hosts[0..8].join(' ')
+        hosts = hosts[9..-1] || []
+        results << [ip_address, hosts_set, comments].compact.join("\t").strip
+      end
+      results.join("\n")
+    else
+      hosts = hosts.join(' ')
+      comments = entry_comment(comment, priority)
+
+      [ip_address, hosts, comments].compact.join("\t").strip
+    end
+  end
+
+  # Returns formatted comments of a entry
+  #
+  # @return [String]
+  def entry_comment(comment, priority)
     comments = "# #{comment.to_s}".strip
     comments << " @#{priority}" unless priority.nil? || @calculated_priority
     comments = comments.strip
     comments = nil if comments == '#'
-
-    [ip_address, hosts, comments].compact.join("\t").strip
+    comments
   end
 
   # Returns true if priority is calculated
