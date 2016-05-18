@@ -132,6 +132,7 @@ class Manipulator
   def save
     file = Chef::Resource::File.new(hostsfile_path, node.run_context)
     file.content(new_content)
+    file.atomic_update false if docker_guest?
     file.run_action(:create)
   end
 
@@ -167,6 +168,14 @@ class Manipulator
   end
 
   private
+
+  # Determine if we are running inside a Docker container
+  #
+  # @return [Boolean]
+  def docker_guest?
+    node['virtualization'] && node['virtualization']['systems'] &&
+      node['virtualization']['systems']['docker'] && node['virtualization']['systems']['docker'] == 'guest'
+  end
 
   # The path to the current hostsfile.
   #
