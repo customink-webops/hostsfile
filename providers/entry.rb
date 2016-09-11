@@ -24,6 +24,8 @@ def whyrun_supported?
   true
 end
 
+use_inline_resources
+
 # Creates a new hosts file entry. If an entry already exists, it will be
 # overwritten by this one.
 action :create do
