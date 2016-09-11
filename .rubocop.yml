@@ -1,0 +1,20 @@
+# Rubocop (cookstyle) todo:
+
+# Configuration parameters: AllowSafeAssignment.
+Lint/AssignmentInCondition:
+  Exclude:
+    - 'libraries/manipulator.rb'
+
+Lint/ShadowingOuterLocalVariable:
+  Exclude:
+    - 'libraries/entry.rb'
+    - 'libraries/manipulator.rb'
+
+Style/DoubleNegation:
+  Exclude:
+    - 'libraries/manipulator.rb'
+
+# Configuration parameters: MinBodyLength.
+Style/GuardClause:
+  Exclude:
+    - 'libraries/manipulator.rb'

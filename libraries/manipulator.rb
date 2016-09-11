@@ -37,8 +37,8 @@ class Manipulator
     @node = node
 
     # Fail if no hostsfile is found
-    unless ::File.exists?(hostsfile_path)
-      raise RuntimeError, "No hostsfile exists at `#{hostsfile_path}'!"
+    unless ::File.exist?(hostsfile_path)
+      raise "No hostsfile exists at `#{hostsfile_path}'!"
     end
 
     @entries = []
@@ -50,9 +50,7 @@ class Manipulator
   # @return [Array<IPAddr>]
   #   the list of IP Addresses
   def ip_addresses
-    @entries.collect do |entry|
-      entry.ip_address
-    end.compact || []
+    @entries.collect(&:ip_address).compact || []
   end
 
   # Add a new record to the hostsfile.
@@ -75,7 +73,7 @@ class Manipulator
       hostname:   options[:hostname],
       aliases:    options[:aliases],
       comment:    options[:comment],
-      priority:   options[:priority],
+      priority:   options[:priority]
     )
 
     @entries << entry
@@ -264,7 +262,7 @@ class Manipulator
         hostname:   entry.hostname,
         aliases:    entry.aliases,
         comment:    entry.comment,
-        priority:   !entry.calculated_priority? && entry.priority,
+        priority:   !entry.calculated_priority? && entry.priority
       )
     end
   end

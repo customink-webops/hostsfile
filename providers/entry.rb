@@ -37,7 +37,7 @@ action :create do
     aliases:    new_resource.aliases,
     comment:    new_resource.comment,
     priority:   new_resource.priority,
-    unique:     new_resource.unique,
+    unique:     new_resource.unique
   )
 
   if hostsfile.content_changed?
@@ -60,7 +60,7 @@ action :create_if_missing do
         aliases:    new_resource.aliases,
         comment:    new_resource.comment,
         priority:   new_resource.priority,
-        unique:     new_resource.unique,
+        unique:     new_resource.unique
       )
       hostsfile.save
     end
@@ -80,7 +80,7 @@ action :append do
     aliases:    new_resource.aliases,
     comment:    new_resource.comment,
     priority:   new_resource.priority,
-    unique:     new_resource.unique,
+    unique:     new_resource.unique
   )
 
   if hostsfile.content_changed?
@@ -101,7 +101,7 @@ action :update do
       aliases:    new_resource.aliases,
       comment:    new_resource.comment,
       priority:   new_resource.priority,
-      unique:     new_resource.unique,
+      unique:     new_resource.unique
     )
 
     if hostsfile.content_changed?

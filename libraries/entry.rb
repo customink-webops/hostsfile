@@ -51,12 +51,12 @@ class Entry
         raise ArgumentError, "/etc/hosts has a line without hostname: #{line}"
       end
 
-      return self.new(
+      new(
         ip_address: entries[0],
         hostname:   entries[1],
         aliases:    entries[2..-1],
         comment:    comment,
-        priority:   priority,
+        priority:   priority
       )
     end
 
@@ -137,7 +137,7 @@ class Entry
   def to_line
     hosts = [hostname, aliases].flatten.join(' ')
 
-    comments = "# #{comment.to_s}".strip
+    comments = "# #{comment}".strip
     comments << " @#{priority}" unless priority.nil? || @calculated_priority
     comments = comments.strip
     comments = nil if comments == '#'
@@ -167,7 +167,7 @@ class Entry
     return 80 if IPAddr.new('127.0.0.0/8').include?(ip_address) # local
     return 60 if ip_address.ipv4? # ipv4
     return 20 if ip_address.ipv6? # ipv6
-    return 00
+    00
   end
 
   # Removes the scopes pieces of the address, because reasons.

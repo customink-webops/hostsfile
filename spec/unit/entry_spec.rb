@@ -19,7 +19,7 @@ describe Entry do
       end
 
       it 'parses aliases' do
-        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: nil, priority: nil)
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: %w(foo bar), comment: nil, priority: nil)
         Entry.parse('1.2.3.4      www.example.com foo bar')
       end
 
@@ -29,7 +29,7 @@ describe Entry do
       end
 
       it 'parses aliases and comments' do
-        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: 'This is a comment!', priority: nil)
+        expect(Entry).to receive(:new).with(ip_address: '1.2.3.4', hostname: 'www.example.com', aliases: %w(foo bar), comment: 'This is a comment!', priority: nil)
         Entry.parse('1.2.3.4      www.example.com foo bar     # This is a comment!')
       end
 
@@ -46,18 +46,18 @@ describe Entry do
   end
 
   describe '.initialize' do
-    subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com', aliases: ['foo', 'bar'], comment: 'This is a comment!', priority: 100) }
+    subject { Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com', aliases: %w(foo bar), comment: 'This is a comment!', priority: 100) }
 
     it 'raises an exception if :ip_address is missing' do
-      expect {
+      expect do
         Entry.new(hostname: 'www.example.com')
-      }.to raise_error(ArgumentError)
+      end.to raise_error(ArgumentError)
     end
 
     it 'raises an exception if :hostname is missing' do
-      expect {
+      expect do
         Entry.new(ip_address: '2.3.4.5')
-      }.to raise_error(ArgumentError)
+      end.to raise_error(ArgumentError)
     end
 
     it 'sets the @ip_address instance variable' do
@@ -76,7 +76,7 @@ describe Entry do
 
     it 'sets the @aliases instance variable' do
       expect(subject.aliases).to be_a(Array)
-      expect(subject.aliases).to eq(['foo', 'bar'])
+      expect(subject.aliases).to eq(%w(foo bar))
     end
 
     it 'sets the @comment instance variable' do
