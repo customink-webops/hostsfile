@@ -10,7 +10,7 @@ describe Manipulator do
       '127.0.0.1  localhost',
       '::1  localhost6',
       '1.2.3.4  example.com',
-      '4.5.6.7  foo.example.com'
+      '4.5.6.7  foo.example.com',
     ]
   end
 
@@ -19,7 +19,7 @@ describe Manipulator do
       Entry.new(ip_address: '127.0.0.1', hostname: 'localhost', to_line: '127.0.0.1  localhost', priority: 10),
       Entry.new(ip_address: '::1', hostname: 'localhost6', to_line: '::1  localhost6', priority: 11),
       Entry.new(ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
-      Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30)
+      Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30),
     ]
   end
 
