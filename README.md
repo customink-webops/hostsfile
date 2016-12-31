@@ -10,7 +10,6 @@ Requirements
 - Chef 11 or higher
 - **Ruby 1.9.3 or higher**
 
-**Please stop opening Pull Requests to restore Ruby 1.8 support!** Any of the `1.x.y` series of this cookbook will work with Chef 10 and Ruby 1.8. You can use Chef's [Omnibus installer](http://www.chef.io/blog/2012/06/29/omnibus-chef-packaging/) to install Ruby 1.9+ and Seth Chisamore's [Vagrant Omnibus plugin](https://github.com/schisamo/vagrant-omnibus) to get Ruby 1.9+ on your Vagrant box.
 
 
 Attributes
