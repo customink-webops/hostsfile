@@ -1,12 +1,10 @@
+# This gemfile provides additional gems for testing and releasing this cookbook
+# It is meant to be installed on top of ChefDK which provides the majority
+# of the necessary gems for testing this cookbook
+#
+# Run 'chef exec bundle install' to install these dependencies
+
 source 'https://rubygems.org'
 
-gem 'berkshelf',  '~> 4.0'
-gem 'chefspec',   '~> 4.0'
-gem 'foodcritic', '~> 7.0'
-gem 'cookstyle'
 gem 'stove'
-
-group :integration do
-  gem 'test-kitchen',    '~> 1.11'
-  gem 'kitchen-vagrant', '~> 0.20'
-end
+gem 'rake'
