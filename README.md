@@ -1,6 +1,6 @@
 hostsfile LWRP
 ==============
-[![Build Status](https://travis-ci.org/customink-webops/hostsfile.png?branch=master)](https://travis-ci.org/customink-webops/hostsfile)
+[![Build Status](https://travis-ci.org/customink-webops/hostsfile.svg?branch=master)](https://travis-ci.org/customink-webops/hostsfile)
 
 `hostsfile` provides an LWRP for managing your `/etc/hosts` (or Windows equivalent) file using Chef.
 
@@ -9,7 +9,6 @@ Requirements
 ------------
 - Chef 11 or higher
 - **Ruby 1.9.3 or higher**
-
 
 
 Attributes
