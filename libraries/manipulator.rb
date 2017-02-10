@@ -102,7 +102,7 @@ class Manipulator
   #
   # @param (see #add)
   def append(options = {})
-    if entry = find_entry_by_ip_address(options[:ip_address])
+    if entry = not(node['platform_family'] == 'windows') && find_entry_by_ip_address(options[:ip_address])
       hosts          = normalize(entry.hostname, entry.aliases, options[:hostname], options[:aliases])
       entry.hostname = hosts.shift
       entry.aliases  = hosts
@@ -251,7 +251,8 @@ class Manipulator
   # @return [Array]
   #   the sorted list of entires that are unique
   def unique_entries
-    entries = Hash[*@entries.map { |entry| [entry.ip_address, entry] }.flatten].values
+    is_windows = node['platform_family'] == 'windows'
+    entries = Hash[*@entries.map { |entry| [is_windows ? entry.hostname : entry.ip_address, entry] }.flatten].values
     entries.sort_by { |e| [-e.priority.to_i, e.hostname.to_s] }
   end
 
