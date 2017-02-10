@@ -217,7 +217,14 @@ class Manipulator
     entries = hostsfile_header
     entries += unique_entries.map(&:to_line)
     entries << ''
-    entries.join("\n")
+    # windows has a limit of 9 host aliases per line, so without proper line
+    # endings, additional host entries wind up being ignored
+    case node['platform_family']
+      when 'windows'
+        entries.join("\r\n")
+      else
+        entries.join("\n")
+      end
   end
 
   # The current sha of the system hostsfile.
