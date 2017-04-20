@@ -32,5 +32,5 @@ attribute :hostname,   kind_of: String
 # Optional attributes
 attribute :aliases,  kind_of: Array
 attribute :comment,  kind_of: String
-attribute :priority, kind_of: Fixnum
+attribute :priority, kind_of: Integer
 attribute :unique,   kind_of: [TrueClass, FalseClass]
