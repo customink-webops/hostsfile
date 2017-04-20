@@ -3,8 +3,8 @@
 # Cookbook:: hostsfile
 # Provider:: entry
 #
-# Copyright 2012-2013, Seth Vargo
-# Copyright 2012, CustomInk, LCC
+# Copyright:: 2012-2013, Seth Vargo
+# Copyright:: 2012, CustomInk, LCC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ def whyrun_supported?
   true
 end
 
+use_inline_resources
+
 # Creates a new hosts file entry. If an entry already exists, it will be
 # overwritten by this one.
 action :create do
@@ -37,7 +39,7 @@ action :create do
     aliases:    new_resource.aliases,
     comment:    new_resource.comment,
     priority:   new_resource.priority,
-    unique:     new_resource.unique,
+    unique:     new_resource.unique
   )
 
   if hostsfile.content_changed?
@@ -60,7 +62,7 @@ action :create_if_missing do
         aliases:    new_resource.aliases,
         comment:    new_resource.comment,
         priority:   new_resource.priority,
-        unique:     new_resource.unique,
+        unique:     new_resource.unique
       )
       hostsfile.save
     end
@@ -80,7 +82,7 @@ action :append do
     aliases:    new_resource.aliases,
     comment:    new_resource.comment,
     priority:   new_resource.priority,
-    unique:     new_resource.unique,
+    unique:     new_resource.unique
   )
 
   if hostsfile.content_changed?
@@ -101,7 +103,7 @@ action :update do
       aliases:    new_resource.aliases,
       comment:    new_resource.comment,
       priority:   new_resource.priority,
-      unique:     new_resource.unique,
+      unique:     new_resource.unique
     )
 
     if hostsfile.content_changed?

@@ -7,19 +7,19 @@ describe Manipulator do
 
   let(:lines) do
     [
-      "127.0.0.1  localhost",
-      "::1  localhost6",
-      "1.2.3.4  example.com",
-      "4.5.6.7  foo.example.com"
+      '127.0.0.1  localhost',
+      '::1  localhost6',
+      '1.2.3.4  example.com',
+      '4.5.6.7  foo.example.com',
     ]
   end
 
   let(:entries) do
     [
-      Entry.new(ip_address: '127.0.0.1', hostname: 'localhost',       to_line: '127.0.0.1  localhost',     priority: 10),
-      Entry.new(ip_address: '::1', hostname: 'localhost6',       to_line: '::1  localhost6',     priority: 11),
+      Entry.new(ip_address: '127.0.0.1', hostname: 'localhost', to_line: '127.0.0.1  localhost', priority: 10),
+      Entry.new(ip_address: '::1', hostname: 'localhost6', to_line: '::1  localhost6', priority: 11),
       Entry.new(ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
-      Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30)
+      Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30),
     ]
   end
 
@@ -77,7 +77,7 @@ describe Manipulator do
     context 'when the entry does not exist' do
       before do
         allow(manipulator).to receive(:find_entry_by_ip_address)
-          .with(any_args())
+          .with(any_args)
           .and_return(nil)
       end
 
@@ -92,7 +92,7 @@ describe Manipulator do
 
       before do
         allow(manipulator).to receive(:find_entry_by_ip_address)
-          .with(any_args())
+          .with(any_args)
           .and_return(entry)
       end
 
@@ -111,7 +111,7 @@ describe Manipulator do
 
       before do
         allow(manipulator).to receive(:find_entry_by_ip_address)
-          .with(any_args())
+          .with(any_args)
           .and_return(entry)
       end
 
@@ -136,7 +136,7 @@ describe Manipulator do
     context 'when the record does not exist' do
       before do
         allow(manipulator).to receive(:find_entry_by_ip_address)
-          .with(any_args())
+          .with(any_args)
           .and_return(nil)
         allow(manipulator).to receive(:add)
       end
@@ -151,7 +151,7 @@ describe Manipulator do
   describe '#remove' do
     context 'when the entry does not exist' do
       before do
-        allow(manipulator).to receive(:find_entry_by_ip_address).with(any_args()).and_return(nil)
+        allow(manipulator).to receive(:find_entry_by_ip_address).with(any_args).and_return(nil)
       end
 
       it 'does nothing' do
@@ -165,7 +165,7 @@ describe Manipulator do
 
       before do
         allow(manipulator).to receive(:find_entry_by_ip_address)
-          .with(any_args())
+          .with(any_args)
           .and_return(entry)
       end
 
@@ -272,7 +272,7 @@ describe Manipulator do
         expect(manipulator.hostsfile_path).to eq('/etc/hosts')
       end
       it 'returns C:\Windows\system32\drivers\etc\hosts on a Windows machine' do
-        windows_attributes = node.merge({ 'platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } } })
+        windows_attributes = node.merge('platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } })
         expect(Manipulator.new(windows_attributes).hostsfile_path).to eq('C:\Windows\system32\drivers\etc\hosts')
       end
     end
@@ -280,7 +280,7 @@ describe Manipulator do
     context 'with a custom hostsfile node attribute' do
       it 'returns the custom path' do
         custom_path = '/custom/path'
-        expect(Manipulator.new(node.merge({'hostsfile' => { 'path' => custom_path } })).hostsfile_path).to eq(custom_path)
+        expect(Manipulator.new(node.merge('hostsfile' => { 'path' => custom_path })).hostsfile_path).to eq(custom_path)
       end
     end
   end
@@ -293,9 +293,9 @@ describe Manipulator do
         entry = Entry.new(ip_address: '7.8.9.10', hostname: 'new.example.com')
         entries << entry
 
-        expect {
+        expect do
           manipulator.remove_existing_hostnames(entry)
-        }.to_not change(manipulator, :entries)
+        end.to_not change(manipulator, :entries)
       end
     end
 
