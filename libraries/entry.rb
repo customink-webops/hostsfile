@@ -104,7 +104,7 @@ class Entry
   #   a alias or array of aliases for this entry
   # @option options[String] :comment
   #   an optional comment for this entry
-  # @option options [Fixnum] :priority
+  # @option options [Integer] :priority
   #   the relative priority of this entry (compared to others)
   #
   # @raise [ArgumentError]
@@ -123,7 +123,7 @@ class Entry
 
   # Set a the new priority for an entry.
   #
-  # @param [Fixnum] new_priority
+  # @param [Integer] new_priority
   #   the new priority to set
   def priority=(new_priority)
     @calculated_priority = false
@@ -157,7 +157,7 @@ class Entry
 
   # Calculates the relative priority of this entry.
   #
-  # @return [Fixnum]
+  # @return [Integer]
   #   the relative priority of this item
   def calculated_priority
     @calculated_priority = true

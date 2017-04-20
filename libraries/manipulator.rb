@@ -67,7 +67,7 @@ class Manipulator
   #   a alias or array of aliases for this entry
   # @option options[String] :comment
   #   an optional comment for this entry
-  # @option options [Fixnum] :priority
+  # @option options [Integer] :priority
   #   the relative priority of this entry (compared to others)
   def add(options = {})
     entry = Entry.new(
