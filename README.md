@@ -193,14 +193,38 @@ end
 
 Priority
 --------
-Priority is a relatively new addition to the cookbook. It gives you the ability to (somewhat) specify the relative order of entries. By default, the priority is calculated for you as follows:
+Priority is a relatively new addition to the cookbook. It gives you the ability to (somewhat) specify the relative order of entries. Entries with a higher number will be placed closer to the top of the file than those with a lower number. By default, the priority is calculated for you as follows:
 
-82. 127.0.0.1
-81. ::1
-80. 127.0.0.0/8
-60. IPV4
-20. IPV6
-00. default
+<table>
+  <tr>
+    <th>Priority</th>
+    <th>Host</th>
+  </tr>
+  <tr>
+    <td>82</td>
+    <td>127.0.0.1</td>
+  </tr>
+  <tr>
+    <td>81</td>
+    <td>::1</td>
+  </tr>
+  <tr>
+    <td>80</td>
+    <td>127.0.0.0/8</td>
+  </tr>
+  <tr>
+    <td>60</td>
+    <td>IPV4</td>
+  </tr>
+  <tr>
+    <td>20</td>
+    <td>IPV6</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>default</td>
+  </tr>
+</table>
 
 However, you can override it using the `priority` option.
 
