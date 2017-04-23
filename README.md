@@ -154,6 +154,7 @@ This will remove the entry for `1.2.3.4`.
 
 Usage
 -----
+### Install
 If you're using [Berkshelf](http://berkshelf.com/), just add `hostsfile` to your `Berksfile`:
 
 ```ruby
@@ -164,6 +165,7 @@ Otherwise, install the cookbook from the community site:
 
     knife cookbook site install hostsfile
 
+### Inside own cookbook usage
 Have any other cookbooks *depend* on hostsfile by editing editing the `metadata.rb` for your cookbook.
 
 ```ruby
@@ -172,6 +174,38 @@ depends 'hostsfile'
 ```
 
 Note that you can specify a custom path to your hosts file in the `['hostsfile']['path']` node attribute. Otherwise, it defaults to sensible paths depending on your OS.
+
+### Out-of-the-box usage with role's overriden attributes
+You can specify hostsfile entries directly in your roles
+```ruby
+    # roles/example_role.rb file
+    name "example_role"
+    run_list(
+      "recipe[hostsfile]",
+    )
+    override_attributes(
+      "hostsfile" => {
+        "entries" => [
+          {
+            "hostname" => "www.example.com",
+            "ip_address" => "10.0.0.21",
+            "aliases" => [ "www" ]
+          },
+          {
+            "hostname" => "api.example.com",
+            "ip_address" => "10.0.0.22",
+            "aliases" => [ "api" ]
+          }
+        ]
+      }
+    )
+```
+This will produce entries like that:
+
+    10.0.0.21      www.example.com www
+    10.0.0.22      api.example.com api
+
+Deafult recipe uses "create" action, so all already defined entries with the same hostnames will be overwritten. All other entries won't be affected.
 
 ### Testing
 If you are using [ChefSpec](https://github.com/sethvargo/chefspec) to unit test a cookbook that implements the `hostsfile_entry` LWRP, this cookbook packages customer matchers that you can use in your unit tests:
