@@ -305,7 +305,7 @@ describe Manipulator do
         entries << entry
 
         manipulator.remove_existing_hostnames(entry)
-        expect(manipulator.entries).to_not include(entries[1])
+        expect(manipulator.entries).to_not include(entries[2])
       end
     end
 
@@ -313,11 +313,11 @@ describe Manipulator do
       it 'removes the duplicate aliases' do
         entry = Entry.new(ip_address: '7.8.9.10', hostname: 'bar.example.com')
         entries << entry
-        entries[1].aliases = ['bar.example.com']
+        entries[2].aliases = ['bar.example.com']
 
         manipulator.remove_existing_hostnames(entry)
-        expect(manipulator.entries).to include(entries[1])
-        expect(manipulator.entries[1].aliases).to be_empty
+        expect(manipulator.entries).to include(entries[2])
+        expect(manipulator.entries[2].aliases).to be_empty
       end
     end
   end
