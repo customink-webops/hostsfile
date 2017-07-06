@@ -27,7 +27,7 @@ describe Manipulator do
   let(:header) { manipulator.hostsfile_header }
 
   before do
-    allow(File).to receive(:exists?).and_return(true)
+    allow(File).to receive(:exist?).and_return(true)
     allow(File).to receive(:readlines).and_return(lines)
     manipulator.instance_variable_set(:@entries, entries)
   end
@@ -39,7 +39,7 @@ describe Manipulator do
     end
 
     it 'raises a fatal error if the hostsfile does not exist' do
-      allow(File).to receive(:exists?).and_return(false)
+      allow(File).to receive(:exist?).and_return(false)
       expect { Manipulator.new(node) }.to raise_error(RuntimeError)
     end
 
@@ -264,7 +264,7 @@ describe Manipulator do
   describe '#hostsfile_path' do
     before do
       manipulator.class.send(:public, :hostsfile_path)
-      allow(File).to receive(:exists?).and_return(true)
+      allow(File).to receive(:exist?).and_return(true)
     end
 
     context 'with no node attribute specified' do
@@ -305,7 +305,7 @@ describe Manipulator do
         entries << entry
 
         manipulator.remove_existing_hostnames(entry)
-        expect(manipulator.entries).to_not include(entries[1])
+        expect(manipulator.entries).to_not include(entries[2])
       end
     end
 
@@ -313,11 +313,11 @@ describe Manipulator do
       it 'removes the duplicate aliases' do
         entry = Entry.new(ip_address: '7.8.9.10', hostname: 'bar.example.com')
         entries << entry
-        entries[1].aliases = ['bar.example.com']
+        entries[2].aliases = ['bar.example.com']
 
         manipulator.remove_existing_hostnames(entry)
-        expect(manipulator.entries).to include(entries[1])
-        expect(manipulator.entries[1].aliases).to be_empty
+        expect(manipulator.entries).to include(entries[2])
+        expect(manipulator.entries[2].aliases).to be_empty
       end
     end
   end

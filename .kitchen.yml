@@ -24,3 +24,5 @@ suites:
     run_list: fake::options
   - name: unique
     run_list: fake::unique
+  - name: zap
+    run_list: fake::zap
