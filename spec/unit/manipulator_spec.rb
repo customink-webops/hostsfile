@@ -39,7 +39,7 @@ describe Manipulator do
     end
 
     it 'raises a fatal error if the hostsfile does not exist' do
-      allow(File).to receive(:exists?).and_return(false)
+      allow(File).to receive(:exist?).and_return(false)
       expect { Manipulator.new(node) }.to raise_error(RuntimeError)
     end
 
@@ -264,7 +264,7 @@ describe Manipulator do
   describe '#hostsfile_path' do
     before do
       manipulator.class.send(:public, :hostsfile_path)
-      allow(File).to receive(:exists?).and_return(true)
+      allow(File).to receive(:exist?).and_return(true)
     end
 
     context 'with no node attribute specified' do
