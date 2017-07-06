@@ -27,7 +27,7 @@ describe Manipulator do
   let(:header) { manipulator.hostsfile_header }
 
   before do
-    allow(File).to receive(:exists?).and_return(true)
+    allow(File).to receive(:exist?).and_return(true)
     allow(File).to receive(:readlines).and_return(lines)
     manipulator.instance_variable_set(:@entries, entries)
   end
