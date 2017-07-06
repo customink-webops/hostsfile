@@ -9,4 +9,7 @@ issues_url       'https://github.com/customink-webops/hostsfile/issues' if respo
 source_url       'https://github.com/customink-webops/hostsfile/nrpe' if respond_to?(:source_url)
 chef_version     '>= 11.0' if respond_to?(:chef_version)
 
+supports         'centos' '>= 6.0'
+supports         'ubuntu' '>= 12.0'
+
 depends          'zap'
