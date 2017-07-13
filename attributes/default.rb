@@ -5,6 +5,7 @@
 #
 # Copyright:: 2012-2013, Seth Vargo
 # Copyright:: 2012, CustomInk, LCC
+# Copyright:: 2017, Workday, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,3 +21,17 @@
 #
 
 default['hostsfile']['path'] = nil
+
+# Weather to create an entry for the FQDN in /etc/hosts
+default['hostsfile']['add_fqdn'] = false
+
+# Entries to be added to /etc/hosts defined in the form:
+#
+# '1.2.3.4' => {
+#   hostname: 'test.example.com',
+#   unique:   true/false,
+#   ...
+# }
+#
+# The entries can use any attribute supported by the hostsfile_entry resource
+default['hostsfile']['entries'] = {}
