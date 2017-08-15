@@ -1,6 +1,3 @@
-require 'serverspec'
-set :backend, :exec
-
 describe 'hostsfile_entry - unique' do
   it 'removes existing hostnames when unique is specified' do
     expect(file('/etc/hosts')).to contain('1.2.3.4[[:space:]]example.com')

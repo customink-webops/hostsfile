@@ -1,6 +1,3 @@
-require 'serverspec'
-set :backend, :exec
-
 describe 'hostsfile_entry - options' do
   it 'appends all options to the entry' do
     expect(file('/etc/hosts')).to contain('2.3.4.5')
