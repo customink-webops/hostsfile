@@ -1,69 +1,31 @@
-hostsfile LWRP
-==============
+# hostsfile LWRP
+
 [![Build Status](https://travis-ci.org/customink-webops/hostsfile.svg?branch=master)](https://travis-ci.org/customink-webops/hostsfile)
 
 `hostsfile` provides an LWRP for managing your `/etc/hosts` (or Windows equivalent) file using Chef.
 
+## Requirements
 
-Requirements
-------------
 - Chef 11 or higher
-- **Ruby 1.9.3 or higher**
 
+## Attributes
 
-Attributes
-----------
-<table>
-  <tr>
-    <th>Attribute</th>
-    <th>Description</th>
-    <th>Example</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td>ip_address</td>
-    <td>(name attribute) the IP address for the entry</td>
-    <td><tt>1.2.3.4</tt></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>hostname</td>
-    <td>(required) the hostname associated with the entry</td>
-    <td><tt>example.com</tt></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>unique</td>
-    <td>remove any existing entries that have the same <tt>hostname</tt></td>
-    <td><tt>true</tt></td>
-    <td><tt>false</tt></td>
-  </tr>
-  <tr>
-    <td>aliases</td>
-    <td>array of aliases for the entry</td>
-    <td><tt>['www.example.com']</tt></td>
-    <td><tt>[]</tt></td>
-  </tr>
-  <tr>
-    <td>comment</td>
-    <td>a comment to append to the end of the entry</td>
-    <td><tt>'interal DNS server'</tt></td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
-    <td>priority</td>
-    <td>the relative position of this entry</td>
-    <td><tt>20</tt></td>
-    <td>(varies, see **Priorities** section)</td>
-  </tr>
-</table>
+Attribute  | Description                                             | Example              | Default
+---------- | --------------------------------------------------------| -------------------- | -------
+ip_address | (name attribute) the IP address for the entry           | 1.2.3.4              |
+hostname   | (required) the hostname associated with the entry       | example.com          |
+unique     | remove any existing entries that have the same hostname | true                 | false
+aliases    | array of aliases for the entry                          | ['www.example.com']  | []
+comment    | a comment to append to the end of the entry             | 'interal DNS server' | nil
+priority   | the relative position of this entry                     | 20                   | (varies, see **Priorities** section)
 
+## Actions
 
-Actions
--------
 **Please note**: In `v0.1.2`, specifying a hostname or alias that existed in another automatically removed that hostname from the other entry before. In `v2.1.0`, the `unique` option was added to give the user case-by-case control of this behavior. For example, given an `/etc/hosts` file that contains:
 
-    1.2.3.4          example.com www.example.com
+```
+1.2.3.4          example.com www.example.com
+```
 
 when the Chef recipe below is converged:
 
@@ -76,12 +38,15 @@ end
 
 then the `/etc/hosts` file will look like this:
 
-    1.2.3.4          example.com
-    2.3.4.5          www.example.com
+```
+1.2.3.4          example.com
+2.3.4.5          www.example.com
+```
 
 Not specifying the `unique` parameter will result in duplicate hostsfile entries.
 
-#### `create`
+### `create`
+
 Creates a new hosts file entry. If an entry already exists, it will be overwritten by this one.
 
 ```ruby
@@ -93,9 +58,12 @@ end
 
 This will create an entry like this:
 
-    1.2.3.4          example.com
+```
+1.2.3.4          example.com
+```
 
-#### `create_if_missing`
+### `create_if_missing`
+
 Create a new hosts file entry, only if one does not already exist for the given IP address. If one exists, this does nothing.
 
 ```ruby
@@ -105,10 +73,13 @@ hostsfile_entry '1.2.3.4' do
 end
 ```
 
-#### `append`
+### `append`
+
 Append a hostname or alias to an existing record. If the given IP address doesn't already exist in the hostsfile, this method behaves the same as create. Otherwise, it will append the additional hostname and aliases to the existing entry.
 
-    1.2.3.4         example.com www.example.com # Created by Chef
+```
+1.2.3.4         example.com www.example.com # Created by Chef
+```
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
@@ -121,10 +92,12 @@ end
 
 would yield:
 
-    1.2.3.4         example.com www.example.com www2.example.com foo.com foobar.com # Created by Chef, Appended by Recipe X
+```
+1.2.3.4         example.com www.example.com www2.example.com foo.com foobar.com # Created by Chef, Appended by Recipe X
+```
 
+### `update`
 
-#### `update`
 Updates the given hosts file entry. Does nothing if the entry does not exist.
 
 ```ruby
@@ -137,11 +110,13 @@ end
 
 This will create an entry like this:
 
-    1.2.3.4           example # Updated by Chef
+```
+1.2.3.4           example # Updated by Chef
+```
 
-#### `remove`
-Removes an entry from the hosts file. Does nothing if the entry does not
-exist.
+### `remove`
+
+Removes an entry from the hosts file. Does nothing if the entry does not exist.
 
 ```ruby
 hostsfile_entry '1.2.3.4' do
@@ -151,9 +126,8 @@ end
 
 This will remove the entry for `1.2.3.4`.
 
+## Usage
 
-Usage
------
 If you're using [Berkshelf](http://berkshelf.com/), just add `hostsfile` to your `Berksfile`:
 
 ```ruby
@@ -162,9 +136,11 @@ cookbook 'hostsfile'
 
 Otherwise, install the cookbook from the community site:
 
-    knife cookbook site install hostsfile
+```
+knife cookbook site install hostsfile
+```
 
-Have any other cookbooks *depend* on hostsfile by editing editing the `metadata.rb` for your cookbook.
+Have any other cookbooks _depend_ on hostsfile by editing editing the `metadata.rb` for your cookbook.
 
 ```ruby
 # metadata.rb
@@ -174,6 +150,7 @@ depends 'hostsfile'
 Note that you can specify a custom path to your hosts file in the `['hostsfile']['path']` node attribute. Otherwise, it defaults to sensible paths depending on your OS.
 
 ### Testing
+
 If you are using [ChefSpec](https://github.com/sethvargo/chefspec) to unit test a cookbook that implements the `hostsfile_entry` LWRP, this cookbook packages customer matchers that you can use in your unit tests:
 
 - `append_hostsfile_entry`
@@ -191,8 +168,8 @@ it 'creates a hostsfile entry for the DNS server' do
 end
 ```
 
-Priority
---------
+## Priority
+
 Priority is a relatively new addition to the cookbook. It gives you the ability to (somewhat) specify the relative order of entries. By default, the priority is calculated for you as follows:
 
 82. 127.0.0.1
@@ -204,17 +181,15 @@ Priority is a relatively new addition to the cookbook. It gives you the ability 
 
 However, you can override it using the `priority` option.
 
+## Contributing
 
-Contributing
-------------
 1. Fork the project
 2. Create a feature branch corresponding to you change
 3. Commit and test thoroughly
 4. Create a Pull Request on github
 
+## License & Authors
 
-License & Authors
------------------
 - Author:: Seth Vargo (sethvargo@gmail.com)
 
 ```text
