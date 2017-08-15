@@ -2,11 +2,9 @@
 
 This file is used to list changes made in each version of the hostsfile cookbook.
 
-## v2.4.6 (pending release)
+## v2.4.6 (2017-08-15)
+
 - use openssl for FIPS compatibility
-
-## v2.4.5 (pending release)
-
 - Expand priority documentation in README
 - Add ::1 loopback to test cases and priority settings
 
