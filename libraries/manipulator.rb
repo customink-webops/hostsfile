@@ -215,7 +215,8 @@ class Manipulator
     entries = hostsfile_header
     entries += unique_entries.map(&:to_line)
     entries << ''
-    entries.join("\n")
+    line_ending = node['platform_family'] == 'windows' ? "\r\n" : "\n"
+    entries.join(line_ending)
   end
 
   # The current sha of the system hostsfile.
