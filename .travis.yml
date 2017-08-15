@@ -1,6 +1,6 @@
-
+sudo: required
 dist: trusty
-sudo: false
+
 addons:
   apt:
     sources:
@@ -8,19 +8,37 @@ addons:
     packages:
       - chefdk
 
-# Don't `bundle install`
+# Don't `bundle install` which takes about 1.5 mins
 install: echo "skip bundle install"
 
 branches:
   only:
     - master
 
-# Ensure we make ChefDK's Ruby the default
-before_script:
-  - eval "$(chef shell-init bash)"
+services: docker
 
-script:
+env:
+  matrix:
+  - INSTANCE=append-centos-6
+  - INSTANCE=append-centos-7
+  - INSTANCE=append-ubuntu-1404
+  - INSTANCE=append-ubuntu-1604
+  - INSTANCE=create-centos-6
+  - INSTANCE=create-centos-7
+  - INSTANCE=create-ubuntu-1404
+  - INSTANCE=create-ubuntu-1604
+
+before_script:
+  - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
+  - eval "$(chef shell-init bash)"
   - chef --version
   - cookstyle --version
   - foodcritic --version
-  - chef exec rake
+
+script: KITCHEN_LOCAL_YAML=.kitchen.dokken.yml kitchen verify ${INSTANCE}
+
+matrix:
+  include:
+    - script:
+      - chef exec delivery local all
+      env: UNIT_AND_LINT=1
