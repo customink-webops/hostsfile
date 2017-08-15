@@ -11,16 +11,16 @@ platforms:
 
 suites:
   - name: append
-    run_list: fake::append
+    run_list: test::append
   - name: append_existing
-    run_list: fake::append_existing
+    run_list: test::append_existing
   - name: create
-    run_list: fake::create
+    run_list: test::create
   - name: create_if_missing
-    run_list: fake::create_if_missing
+    run_list: test::create_if_missing
   - name: default
-    run_list: fake::default
+    run_list: test::default
   - name: options
-    run_list: fake::options
+    run_list: test::options
   - name: unique
-    run_list: fake::unique
+    run_list: test::unique
