@@ -20,7 +20,7 @@
 #
 
 require 'chef/application'
-require 'digest/sha2'
+require 'openssl'
 
 class Manipulator
   attr_reader :node
@@ -139,7 +139,7 @@ class Manipulator
   #
   # @return [Boolean]
   def content_changed?
-    new_sha = Digest::SHA512.hexdigest(new_content)
+    new_sha = OpenSSL::Digest::SHA512.hexdigest(new_content)
     new_sha != current_sha
   end
 
@@ -223,7 +223,7 @@ class Manipulator
   # @return [String]
   #   the sha of the current hostsfile
   def current_sha
-    @current_sha ||= Digest::SHA512.hexdigest(File.read(hostsfile_path))
+    @current_sha ||= OpenSSL::Digest::SHA512.hexdigest(File.read(hostsfile_path))
   end
 
   # Normalize the given list of elements into a single array with no nil
