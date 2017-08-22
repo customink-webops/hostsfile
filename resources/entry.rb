@@ -138,6 +138,6 @@ action_class do
   # @return [Manipulator]
   #   the manipulator for this hostsfile
   def hostsfile
-    @hostsfile ||= Manipulator.new(node)
+    @hostsfile ||= HostsFile::Manipulator.new(node)
   end
 end
