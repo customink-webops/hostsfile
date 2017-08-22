@@ -1,8 +1,8 @@
-# hostsfile LWRP
+# hostsfile cookbook
 
 [![Build Status](https://travis-ci.org/customink-webops/hostsfile.svg?branch=master)](https://travis-ci.org/customink-webops/hostsfile)
 
-`hostsfile` provides an LWRP for managing your `/etc/hosts` (or Windows equivalent) file using Chef.
+`hostsfile` provides a resource for managing your `/etc/hosts` (or Windows equivalent) file using Chef.
 
 ## Requirements
 
@@ -11,7 +11,7 @@
 ## Attributes
 
 Attribute  | Description                                             | Example              | Default
----------- | --------------------------------------------------------| -------------------- | -------
+---------- | ------------------------------------------------------- | -------------------- | ------------------------------------
 ip_address | (name attribute) the IP address for the entry           | 1.2.3.4              |
 hostname   | (required) the hostname associated with the entry       | example.com          |
 unique     | remove any existing entries that have the same hostname | true                 | false
@@ -151,7 +151,7 @@ Note that you can specify a custom path to your hosts file in the `['hostsfile']
 
 ### Testing
 
-If you are using [ChefSpec](https://github.com/sethvargo/chefspec) to unit test a cookbook that implements the `hostsfile_entry` LWRP, this cookbook packages customer matchers that you can use in your unit tests:
+If you are using [ChefSpec](https://github.com/sethvargo/chefspec) to unit test a cookbook that implements the `hostsfile_entry` resource, this cookbook packages customer matchers that you can use in your unit tests:
 
 - `append_hostsfile_entry`
 - `create_hostsfile_entry`
