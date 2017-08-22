@@ -19,18 +19,125 @@
 # limitations under the License.
 #
 
-# List of all actions supported by the provider
-actions :create, :create_if_missing, :append, :update, :remove
-
-# Make create the default action
-default_action :create
-
 # Required attributes
-attribute :ip_address, kind_of: String, name_attribute: true
-attribute :hostname,   kind_of: String
+property :ip_address, String, name_property: true
+property :hostname,   String
 
 # Optional attributes
-attribute :aliases,  kind_of: Array
-attribute :comment,  kind_of: String
-attribute :priority, kind_of: Integer
-attribute :unique,   kind_of: [TrueClass, FalseClass]
+property :aliases,  Array
+property :comment,  String
+property :priority, Integer
+property :unique,   [TrueClass, FalseClass]
+
+# Creates a new hosts file entry. If an entry already exists, it will be
+# overwritten by this one.
+action :create do
+  if hostsfile.contains?(new_resource)
+    Chef::Log.debug "#{new_resource} already exists - overwriting."
+  end
+
+  hostsfile.add(
+    ip_address: new_resource.ip_address,
+    hostname:   new_resource.hostname,
+    aliases:    new_resource.aliases,
+    comment:    new_resource.comment,
+    priority:   new_resource.priority,
+    unique:     new_resource.unique
+  )
+
+  if hostsfile.content_changed?
+    converge_by("Create #{new_resource}") { hostsfile.save }
+  else
+    Chef::Log.info "#{new_resource} content already matches - nothing to do."
+  end
+end
+
+# Create a new hosts file entry, only if one does not already exist for
+# the given IP address. If one exists, this does nothing.
+action :create_if_missing do
+  if hostsfile.contains?(new_resource)
+    Chef::Log.info "#{new_resource} already exists - skipping create_if_missing."
+  else
+    converge_by("Create #{new_resource} if missing") do
+      hostsfile.add(
+        ip_address: new_resource.ip_address,
+        hostname:   new_resource.hostname,
+        aliases:    new_resource.aliases,
+        comment:    new_resource.comment,
+        priority:   new_resource.priority,
+        unique:     new_resource.unique
+      )
+      hostsfile.save
+    end
+  end
+end
+
+# Appends the given data to an existing entry. If an entry does not exist,
+# one will be created
+action :append do
+  unless hostsfile.contains?(new_resource)
+    Chef::Log.info "#{new_resource} does not exist - creating instead."
+  end
+
+  hostsfile.append(
+    ip_address: new_resource.ip_address,
+    hostname:   new_resource.hostname,
+    aliases:    new_resource.aliases,
+    comment:    new_resource.comment,
+    priority:   new_resource.priority,
+    unique:     new_resource.unique
+  )
+
+  if hostsfile.content_changed?
+    converge_by("Append #{new_resource}") { hostsfile.save }
+  else
+    Chef::Log.info "#{new_resource} content already matches - nothing to do."
+  end
+end
+
+# Updates the given hosts file entry. Does nothing if the entry does not
+# exist.
+action :update do
+  if hostsfile.contains?(new_resource)
+
+    hostsfile.update(
+      ip_address: new_resource.ip_address,
+      hostname:   new_resource.hostname,
+      aliases:    new_resource.aliases,
+      comment:    new_resource.comment,
+      priority:   new_resource.priority,
+      unique:     new_resource.unique
+    )
+
+    if hostsfile.content_changed?
+      converge_by("Update #{new_resource}") { hostsfile.save }
+    else
+      Chef::Log.info "#{new_resource} content already matches - nothing to do."
+    end
+  else
+    Chef::Log.info "#{new_resource} does not exist - skipping update."
+  end
+end
+
+# Removes an entry from the hosts file. Does nothing if the entry does
+# not exist.
+action :remove do
+  if hostsfile.contains?(new_resource)
+    converge_by("Remove #{new_resource}") do
+      hostsfile.remove(new_resource.ip_address)
+      hostsfile.save
+    end
+  else
+    Chef::Log.info "#{new_resource} does not exist - skipping remove."
+  end
+end
+
+action_class do
+  # The hostsfile object
+  #
+  # @return [Manipulator]
+  #   the manipulator for this hostsfile
+  def hostsfile
+    @hostsfile ||= Manipulator.new(node)
+  end
+end
