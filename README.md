@@ -6,7 +6,7 @@
 
 ## Requirements
 
-- Chef 11 or higher
+- Chef 12.7 or higher
 
 ## Attributes
 
