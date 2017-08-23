@@ -2,11 +2,17 @@
 
 This file is used to list changes made in each version of the hostsfile cookbook.
 
+## v3.0.1 (2017-08-22)
+
+- Add TESTING.md and CONTRIBUTING.md files
+- Fix the readme to properly specify Chef 12.7+ as the Chef requirement
+- Add a local delivery configuration and remove the existing rakefile
+- Resolve _most_ of the ChefSpec failures
+
 ## v3.0.0 (2017-08-22)
 
 - Converted the LWRP to a custom resource which increases the required Chef release to 12.7
 - Namespaced the helper libraries under the HostsFile module to prevent method collisions with other resources or the chef-client itself
-
 
 ## v2.4.6 (2017-08-15)
 
