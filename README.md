@@ -181,13 +181,6 @@ Priority is a relatively new addition to the cookbook. It gives you the ability 
 
 However, you can override it using the `priority` option.
 
-## Contributing
-
-1. Fork the project
-2. Create a feature branch corresponding to you change
-3. Commit and test thoroughly
-4. Create a Pull Request on github
-
 ## License & Authors
 
 - Author:: Seth Vargo (sethvargo@gmail.com)
