@@ -10,14 +10,14 @@
 
 ## Attributes
 
-Attribute  | Description                                             | Example              | Default
----------- | ------------------------------------------------------- | -------------------- | ------------------------------------
-ip_address | (name attribute) the IP address for the entry           | 1.2.3.4              |
-hostname   | (required) the hostname associated with the entry       | example.com          |
-unique     | remove any existing entries that have the same hostname | true                 | false
-aliases    | array of aliases for the entry                          | ['www.example.com']  | []
-comment    | a comment to append to the end of the entry             | 'interal DNS server' | nil
-priority   | the relative position of this entry                     | 20                   | (varies, see **Priorities** section)
+Attribute  | Description                                             | Example               | Default
+---------- | ------------------------------------------------------- | --------------------- | ------------------------------------
+ip_address | (name attribute) the IP address for the entry           | 1.2.3.4               |
+hostname   | (required) the hostname associated with the entry       | example.com           |
+unique     | remove any existing entries that have the same hostname | true                  | false
+aliases    | array of aliases for the entry                          | ['www.example.com']   | []
+comment    | a comment to append to the end of the entry             | 'internal DNS server' | nil
+priority   | the relative position of this entry                     | 20                    | (varies, see **Priorities** section)
 
 ## Actions
 
@@ -85,7 +85,7 @@ Append a hostname or alias to an existing record. If the given IP address doesn'
 hostsfile_entry '1.2.3.4' do
   hostname  'www2.example.com'
   aliases   ['foo.com', 'foobar.com']
-  comment   'Append by Recipe X'
+  comment   'Appended by Recipe X'
   action    :append
 end
 ```
@@ -103,7 +103,7 @@ Updates the given hosts file entry. Does nothing if the entry does not exist.
 ```ruby
 hostsfile_entry '1.2.3.4' do
   hostname  'example.com'
-  comment   'Update by Chef'
+  comment   'Updated by Chef'
   action    :update
 end
 ```
