@@ -1,23 +1,23 @@
-# hostsfile LWRP
+# hostsfile cookbook
 
 [![Build Status](https://travis-ci.org/customink-webops/hostsfile.svg?branch=master)](https://travis-ci.org/customink-webops/hostsfile)
 
-`hostsfile` provides an LWRP for managing your `/etc/hosts` (or Windows equivalent) file using Chef.
+`hostsfile` provides a resource for managing your `/etc/hosts` (or Windows equivalent) file using Chef.
 
 ## Requirements
 
-- Chef 11 or higher
+- Chef 12.7 or higher
 
 ## Attributes
 
-Attribute  | Description                                             | Example              | Default
----------- | --------------------------------------------------------| -------------------- | -------
-ip_address | (name attribute) the IP address for the entry           | 1.2.3.4              |
-hostname   | (required) the hostname associated with the entry       | example.com          |
-unique     | remove any existing entries that have the same hostname | true                 | false
-aliases    | array of aliases for the entry                          | ['www.example.com']  | []
-comment    | a comment to append to the end of the entry             | 'interal DNS server' | nil
-priority   | the relative position of this entry                     | 20                   | (varies, see **Priorities** section)
+Attribute  | Description                                             | Example               | Default
+---------- | ------------------------------------------------------- | --------------------- | ------------------------------------
+ip_address | (name attribute) the IP address for the entry           | 1.2.3.4               |
+hostname   | (required) the hostname associated with the entry       | example.com           |
+unique     | remove any existing entries that have the same hostname | true                  | false
+aliases    | array of aliases for the entry                          | ['www.example.com']   | []
+comment    | a comment to append to the end of the entry             | 'internal DNS server' | nil
+priority   | the relative position of this entry                     | 20                    | (varies, see **Priorities** section)
 
 ## Actions
 
@@ -85,7 +85,7 @@ Append a hostname or alias to an existing record. If the given IP address doesn'
 hostsfile_entry '1.2.3.4' do
   hostname  'www2.example.com'
   aliases   ['foo.com', 'foobar.com']
-  comment   'Append by Recipe X'
+  comment   'Appended by Recipe X'
   action    :append
 end
 ```
@@ -103,7 +103,7 @@ Updates the given hosts file entry. Does nothing if the entry does not exist.
 ```ruby
 hostsfile_entry '1.2.3.4' do
   hostname  'example.com'
-  comment   'Update by Chef'
+  comment   'Updated by Chef'
   action    :update
 end
 ```
@@ -151,7 +151,7 @@ Note that you can specify a custom path to your hosts file in the `['hostsfile']
 
 ### Testing
 
-If you are using [ChefSpec](https://github.com/sethvargo/chefspec) to unit test a cookbook that implements the `hostsfile_entry` LWRP, this cookbook packages customer matchers that you can use in your unit tests:
+If you are using [ChefSpec](https://github.com/sethvargo/chefspec) to unit test a cookbook that implements the `hostsfile_entry` resource, this cookbook packages customer matchers that you can use in your unit tests:
 
 - `append_hostsfile_entry`
 - `create_hostsfile_entry`
@@ -180,13 +180,6 @@ Priority is a relatively new addition to the cookbook. It gives you the ability 
 00. default
 
 However, you can override it using the `priority` option.
-
-## Contributing
-
-1. Fork the project
-2. Create a feature branch corresponding to you change
-3. Commit and test thoroughly
-4. Create a Pull Request on github
 
 ## License & Authors
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Manipulator do
+describe HostsFile::Manipulator do
   let(:node) do
     { 'hostsfile' => { 'path' => nil } }
   end
@@ -16,36 +16,38 @@ describe Manipulator do
 
   let(:entries) do
     [
-      Entry.new(ip_address: '127.0.0.1', hostname: 'localhost', to_line: '127.0.0.1  localhost', priority: 10),
-      Entry.new(ip_address: '::1', hostname: 'localhost6', to_line: '::1  localhost6', priority: 11),
-      Entry.new(ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
-      Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30),
+      HostsFile::Entry.new(ip_address: '127.0.0.1', hostname: 'localhost', to_line: '127.0.0.1  localhost', priority: 10),
+      HostsFile::Entry.new(ip_address: '::1', hostname: 'localhost6', to_line: '::1  localhost6', priority: 11),
+      HostsFile::Entry.new(ip_address: '1.2.3.4',   hostname: 'example.com',     to_line: '1.2.3.4  example.com',     priority: 20),
+      HostsFile::Entry.new(ip_address: '4.5.6.7',   hostname: 'foo.example.com', to_line: '4.5.6.7  foo.example.com', priority: 30),
     ]
   end
 
-  let(:manipulator) { Manipulator.new(node) }
+  let(:manipulator) { HostsFile::Manipulator.new(node) }
   let(:header) { manipulator.hostsfile_header }
 
   before do
-    allow(File).to receive(:exists?).and_return(true)
-    allow(File).to receive(:readlines).and_return(lines)
+    allow(File).to receive(:exist?).and_call_original
+    allow(File).to receive(:readlines).and_call_original
+    allow(File).to receive(:exist?).with('/etc/hosts').and_return(true)
+    allow(File).to receive(:readlines).with('/etc/hosts').and_return(lines)
     manipulator.instance_variable_set(:@entries, entries)
   end
 
   describe '.initialize' do
     it 'saves the node hash to an instance variable' do
-      manipulator = Manipulator.new(node)
+      manipulator = HostsFile::Manipulator.new(node)
       expect(manipulator.node).to be(node)
     end
 
     it 'raises a fatal error if the hostsfile does not exist' do
-      allow(File).to receive(:exists?).and_return(false)
-      expect { Manipulator.new(node) }.to raise_error(RuntimeError)
+      allow(File).to receive(:exist?).with('/etc/hosts').and_return(false)
+      expect { HostsFile::Manipulator.new(node) }.to raise_error(RuntimeError)
     end
 
     it 'sends the line to be parsed by the Entry class' do
-      lines.each { |l| allow(Entry).to receive(:parse).with(l) }
-      Manipulator.new(node)
+      lines.each { |l| allow(HostsFile::Entry).to receive(:parse).with(l) }
+      HostsFile::Manipulator.new(node)
     end
   end
 
@@ -60,10 +62,10 @@ describe Manipulator do
 
     let(:options) { { ip_address: '1.2.3.4', hostname: 'example.com', aliases: nil, comment: 'Some comment', priority: 5 } }
 
-    before { allow(Entry).to receive(:new).and_return(entry) }
+    before { allow(HostsFile::Entry).to receive(:new).and_return(entry) }
 
     it 'creates a new entry object' do
-      allow(Entry).to receive(:new).with(options)
+      allow(HostsFile::Entry).to receive(:new).with(options)
       manipulator.add(options)
     end
 
@@ -273,14 +275,19 @@ describe Manipulator do
       end
       it 'returns C:\Windows\system32\drivers\etc\hosts on a Windows machine' do
         windows_attributes = node.merge('platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } })
-        expect(Manipulator.new(windows_attributes).hostsfile_path).to eq('C:\Windows\system32\drivers\etc\hosts')
+        windows_path = 'C:\Windows\system32\drivers\etc\hosts'
+        allow(File).to receive(:exist?).with(windows_path).and_return(true)
+        allow(File).to receive(:readlines).with(windows_path).and_return(lines)
+        expect(HostsFile::Manipulator.new(windows_attributes).hostsfile_path).to eq('C:\Windows\system32\drivers\etc\hosts')
       end
     end
 
     context 'with a custom hostsfile node attribute' do
       it 'returns the custom path' do
         custom_path = '/custom/path'
-        expect(Manipulator.new(node.merge('hostsfile' => { 'path' => custom_path })).hostsfile_path).to eq(custom_path)
+        allow(File).to receive(:exist?).with(custom_path).and_return(true)
+        allow(File).to receive(:readlines).with(custom_path).and_return(lines)
+        expect(HostsFile::Manipulator.new(node.merge('hostsfile' => { 'path' => custom_path })).hostsfile_path).to eq(custom_path)
       end
     end
   end
@@ -290,7 +297,7 @@ describe Manipulator do
 
     context 'with no duplicates' do
       it 'does not change anything' do
-        entry = Entry.new(ip_address: '7.8.9.10', hostname: 'new.example.com')
+        entry = HostsFile::Entry.new(ip_address: '7.8.9.10', hostname: 'new.example.com')
         entries << entry
 
         expect do
@@ -301,17 +308,17 @@ describe Manipulator do
 
     context 'with duplicate hostnames' do
       it 'removes the duplicate hostnames' do
-        entry = Entry.new(ip_address: '7.8.9.10', hostname: 'example.com')
+        entry = HostsFile::Entry.new(ip_address: '7.8.9.10', hostname: 'example.com')
         entries << entry
 
         manipulator.remove_existing_hostnames(entry)
-        expect(manipulator.entries).to_not include(entries[1])
+        expect(manipulator.entries).to_not include(entries.find { |e| e.hostname == 'example.com' })
       end
     end
 
     context 'with duplicate aliases' do
       it 'removes the duplicate aliases' do
-        entry = Entry.new(ip_address: '7.8.9.10', hostname: 'bar.example.com')
+        entry = HostsFile::Entry.new(ip_address: '7.8.9.10', hostname: 'bar.example.com')
         entries << entry
         entries[1].aliases = ['bar.example.com']
 
