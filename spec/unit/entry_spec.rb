@@ -164,5 +164,79 @@ describe HostsFile::Entry do
         expect(subject.to_line).to eq("2.3.4.5\twww.example.com\t# This is a comment! @10")
       end
     end
+
+    context 'windows' do
+      subject { HostsFile::Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com', comment: 'This is a comment!', priority: 10) }
+
+      before do
+        allow(Chef::Platform).to receive(:windows?).and_return(true)
+      end
+
+      it 'prints 9 hosts on a single line' do
+        subject.aliases = ['www.example2.com',
+                           'www.example3.com',
+                           'www.example4.com',
+                           'www.example5.com',
+                           'www.example6.com',
+                           'www.example7.com',
+                           'www.example8.com',
+                           'www.example9.com']
+
+        expect(subject.to_line).to eq("2.3.4.5\twww.example.com www.example2.com www.example3.com www.example4.com www.example5.com www.example6.com www.example7.com www.example8.com www.example9.com\t# This is a comment! @10")
+      end
+
+      it 'prints more than 9 hosts on multiple lines' do
+        subject.aliases = ['www.example2.com',
+                           'www.example3.com',
+                           'www.example4.com',
+                           'www.example5.com',
+                           'www.example6.com',
+                           'www.example7.com',
+                           'www.example8.com',
+                           'www.example9.com',
+                           'www.example10.com',
+                           'www.example11.com',
+                           'www.example12.com']
+
+        expect(subject.to_line).to eq("2.3.4.5\twww.example.com www.example2.com www.example3.com www.example4.com www.example5.com www.example6.com www.example7.com www.example8.com www.example9.com\t# This is a comment! @10\n2.3.4.5\twww.example10.com www.example11.com www.example12.com\t# This is a comment! @10")
+      end
+    end
+
+    context 'linux' do
+      subject { HostsFile::Entry.new(ip_address: '2.3.4.5', hostname: 'www.example.com', comment: 'This is a comment!', priority: 10) }
+
+      before do
+        allow(Chef::Platform).to receive(:windows?).and_return(false)
+      end
+
+      it 'prints 9 hosts on a single line' do
+        subject.aliases = ['www.example2.com',
+                           'www.example3.com',
+                           'www.example4.com',
+                           'www.example5.com',
+                           'www.example6.com',
+                           'www.example7.com',
+                           'www.example8.com',
+                           'www.example9.com']
+
+        expect(subject.to_line).to eq("2.3.4.5\twww.example.com www.example2.com www.example3.com www.example4.com www.example5.com www.example6.com www.example7.com www.example8.com www.example9.com\t# This is a comment! @10")
+      end
+
+      it 'prints more than 9 hosts on a single line' do
+        subject.aliases = ['www.example2.com',
+                           'www.example3.com',
+                           'www.example4.com',
+                           'www.example5.com',
+                           'www.example6.com',
+                           'www.example7.com',
+                           'www.example8.com',
+                           'www.example9.com',
+                           'www.example10.com',
+                           'www.example11.com',
+                           'www.example12.com']
+
+        expect(subject.to_line).to eq("2.3.4.5\twww.example.com www.example2.com www.example3.com www.example4.com www.example5.com www.example6.com www.example7.com www.example8.com www.example9.com www.example10.com www.example11.com www.example12.com\t# This is a comment! @10")
+      end
+    end
   end
 end
