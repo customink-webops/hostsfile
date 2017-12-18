@@ -27,8 +27,10 @@ describe HostsFile::Manipulator do
   let(:header) { manipulator.hostsfile_header }
 
   before do
-    allow(File).to receive(:exists?).and_return(true)
-    allow(File).to receive(:readlines).and_return(lines)
+    allow(File).to receive(:exist?).and_call_original
+    allow(File).to receive(:readlines).and_call_original
+    allow(File).to receive(:exist?).with('/etc/hosts').and_return(true)
+    allow(File).to receive(:readlines).with('/etc/hosts').and_return(lines)
     manipulator.instance_variable_set(:@entries, entries)
   end
 
@@ -39,7 +41,7 @@ describe HostsFile::Manipulator do
     end
 
     it 'raises a fatal error if the hostsfile does not exist' do
-      allow(File).to receive(:exists?).and_return(false)
+      allow(File).to receive(:exist?).with('/etc/hosts').and_return(false)
       expect { HostsFile::Manipulator.new(node) }.to raise_error(RuntimeError)
     end
 
@@ -273,6 +275,9 @@ describe HostsFile::Manipulator do
       end
       it 'returns C:\Windows\system32\drivers\etc\hosts on a Windows machine' do
         windows_attributes = node.merge('platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } })
+        windows_path = 'C:\Windows\system32\drivers\etc\hosts'
+        allow(File).to receive(:exist?).with(windows_path).and_return(true)
+        allow(File).to receive(:readlines).with(windows_path).and_return(lines)
         expect(HostsFile::Manipulator.new(windows_attributes).hostsfile_path).to eq('C:\Windows\system32\drivers\etc\hosts')
       end
     end
@@ -280,6 +285,8 @@ describe HostsFile::Manipulator do
     context 'with a custom hostsfile node attribute' do
       it 'returns the custom path' do
         custom_path = '/custom/path'
+        allow(File).to receive(:exist?).with(custom_path).and_return(true)
+        allow(File).to receive(:readlines).with(custom_path).and_return(lines)
         expect(HostsFile::Manipulator.new(node.merge('hostsfile' => { 'path' => custom_path })).hostsfile_path).to eq(custom_path)
       end
     end
@@ -305,7 +312,7 @@ describe HostsFile::Manipulator do
         entries << entry
 
         manipulator.remove_existing_hostnames(entry)
-        expect(manipulator.entries).to_not include(entries[1])
+        expect(manipulator.entries).to_not include(entries.find { |e| e.hostname == 'example.com' })
       end
     end
 
