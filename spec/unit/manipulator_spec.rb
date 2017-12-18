@@ -275,6 +275,9 @@ describe HostsFile::Manipulator do
       end
       it 'returns C:\Windows\system32\drivers\etc\hosts on a Windows machine' do
         windows_attributes = node.merge('platform_family' => 'windows', 'kernel' => { 'os_info' => { 'system_directory' => 'C:\Windows\system32' } })
+        windows_path = 'C:\Windows\system32\drivers\etc\hosts'
+        allow(File).to receive(:exist?).with(windows_path).and_return(true)
+        allow(File).to receive(:readlines).with(windows_path).and_return(lines)
         expect(HostsFile::Manipulator.new(windows_attributes).hostsfile_path).to eq('C:\Windows\system32\drivers\etc\hosts')
       end
     end
