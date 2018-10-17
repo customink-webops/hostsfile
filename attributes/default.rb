@@ -22,7 +22,7 @@
 
 default['hostsfile']['path'] = nil
 
-# Weather to create an entry for the FQDN in /etc/hosts
+# Whether to create an entry for the FQDN in /etc/hosts
 default['hostsfile']['add_fqdn'] = false
 
 # Entries to be added to /etc/hosts defined in the form:
