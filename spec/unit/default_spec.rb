@@ -1,6 +1,4 @@
 #
-# rubocop:disable AsciiComments
-#
 # Author:: Bogdan Katyński <bogdan.katynski@gmail.com>
 # Cookbook Name:: hostsfile
 # Spec:: default
@@ -19,8 +17,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# rubocop:enable AsciiComments
 #
 
 require 'spec_helper'
@@ -53,13 +49,13 @@ describe 'hostsfile::default' do
       {
         '1.2.3.4' => {
           hostname: 'host1.some.test.domain',
-          unique: false
+          unique: false,
         },
         '2.3.4.5' => {
           hostname: 'host2.some.test.domain',
           unique: true,
-          aliases: %w(alias1.some.test.domain alias2.some.test.domain)
-        }
+          aliases: %w(alias1.some.test.domain alias2.some.test.domain),
+        },
       }
     end
     let(:runner) do
@@ -79,8 +75,8 @@ describe 'hostsfile::default' do
         {
           '1.2.3.4' => {
             hostname: 'host1.some.test.domain',
-            action: :unsupported_action
-          }
+            action: :unsupported_action,
+          },
         }
       end
 

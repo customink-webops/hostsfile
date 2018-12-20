@@ -1,6 +1,4 @@
 #
-# rubocop:disable AsciiComments
-#
 # Author:: Bogdan Katyński <bogdan.katynski@workday.com>
 # Cookbook Name:: hostsfile
 # Recipe:: default
@@ -17,7 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# rubocop:enable AsciiComments
 
 # Create a mapping for the FQDN
 hostsfile_entry node['ipaddress'] do
