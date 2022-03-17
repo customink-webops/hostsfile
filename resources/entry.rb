@@ -19,6 +19,9 @@
 # limitations under the License.
 #
 
+# enable unified mode
+unified_mode true
+
 # Required attributes
 property :ip_address, String, name_property: true
 property :hostname,   String
